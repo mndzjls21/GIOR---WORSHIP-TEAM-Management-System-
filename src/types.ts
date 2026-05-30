@@ -5,6 +5,7 @@ export interface Song {
   original_key: string;
   bpm: number;
   tags: string[];
+  language?: string;
   lyrics_chords: string;
   media_url?: string;
   instrumental_guide_guitar?: string;
