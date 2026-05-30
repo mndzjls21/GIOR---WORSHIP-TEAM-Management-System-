@@ -15,6 +15,13 @@ A comprehensive worship setlist builder and planner designed to manage song libr
 **Built by:** Julius Mendoza  
 **Contact:** [juliusmendoza809@gmail.com](mailto:juliusmendoza809@gmail.com)
 
+## Directory Structure
+
+To help navigate the codebase in GitHub, you can refer to the labels and documentation files located in major folders:
+- **[`/src/`](src/README.md):** Main directory containing all source code and entry points.
+- **[`/src/components/`](src/components/README.md):** Reusable React components that make up the interfaces (Song Library, Schedule, Setlist Builder).
+- **[`/src/lib/`](src/lib/README.md):** Global utilities and integrations (e.g., Firebase initialization).
+
 ## Technologies Used
 
 - React 19
