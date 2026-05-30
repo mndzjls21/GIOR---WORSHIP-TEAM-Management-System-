@@ -1,0 +1,6 @@
+{
+  "name": "Worship Setlist Builder",
+  "description": "A comprehensive worship setlist builder and planner, featuring song libraries, rehearsal media integration, and dynamic setlist management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

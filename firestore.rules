@@ -1,0 +1,97 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return true; } // 100% Open Access via Obscured URL
+
+    function isValidSong(data) {
+      return data.keys().hasAll(['title', 'artist', 'original_key', 'bpm', 'lyrics_chords', 'createdAt'])
+        && data.title is string && data.title.size() <= 200
+        && data.artist is string && data.artist.size() <= 200
+        && data.original_key is string && data.original_key.size() <= 5
+        && data.bpm is number
+        && data.lyrics_chords is string && data.lyrics_chords.size() <= 50000
+        && data.createdAt is number
+        && (!('media_url' in data) || (data.media_url is string && data.media_url.size() <= 500))
+        && (!('tags' in data) || (data.tags is list && data.tags.size() <= 20 && (data.tags.size() == 0 || data.tags[0] is string)))
+        && (!('instrumental_guide_guitar' in data) || (data.instrumental_guide_guitar is string && data.instrumental_guide_guitar.size() <= 1000))
+        && (!('instrumental_guide_piano' in data) || (data.instrumental_guide_piano is string && data.instrumental_guide_piano.size() <= 1000));
+    }
+
+    function isValidSchedule(data) {
+      return data.keys().hasAll(['service_date', 'createdAt'])
+        && data.service_date is string && data.service_date.size() <= 50
+        && data.createdAt is number
+        && (!('presider' in data) || (data.presider is string && data.presider.size() <= 100))
+        && (!('worship_leader' in data) || (data.worship_leader is string && data.worship_leader.size() <= 100))
+        && (!('lead_guitar' in data) || (data.lead_guitar is string && data.lead_guitar.size() <= 100))
+        && (!('acoustic_guitar' in data) || (data.acoustic_guitar is string && data.acoustic_guitar.size() <= 100))
+        && (!('bassist' in data) || (data.bassist is string && data.bassist.size() <= 100))
+        && (!('keyboardist' in data) || (data.keyboardist is string && data.keyboardist.size() <= 100))
+        && (!('drummer' in data) || (data.drummer is string && data.drummer.size() <= 100))
+        && (!('backup_vocals' in data) || (data.backup_vocals is string && data.backup_vocals.size() <= 300))
+        && (!('projectionist' in data) || (data.projectionist is string && data.projectionist.size() <= 100))
+        && (!('livestreamer' in data) || (data.livestreamer is string && data.livestreamer.size() <= 100))
+        && (!('photographer' in data) || (data.photographer is string && data.photographer.size() <= 100));
+    }
+
+    function isValidSetlist(data) {
+      return data.keys().hasAll(['schedule_id', 'song_id', 'sort_order', 'target_key', 'createdAt'])
+        && data.schedule_id is string && data.schedule_id.size() <= 128
+        && data.song_id is string && data.song_id.size() <= 128
+        && data.sort_order is number
+        && data.target_key is string && data.target_key.size() <= 15
+        && data.createdAt is number
+        && (!('service_label' in data) || (data.service_label is string && data.service_label.size() <= 100));
+    }
+
+    function isValidBlackoutDate(data) {
+      return data.keys().hasAll(['member_name', 'unavailable_date', 'createdAt'])
+        && data.member_name is string && data.member_name.size() <= 100
+        && data.unavailable_date is string && data.unavailable_date.size() <= 50
+        && data.createdAt is number;
+    }
+
+    match /songs/{songId} {
+      allow read: if isSignedIn() && isValidId(songId);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(songId) && isValidSong(incoming()) && incoming().keys().size() <= 15;
+      allow update: if isSignedIn() && isValidId(songId) && isValidSong(incoming());
+      allow delete: if isSignedIn() && isValidId(songId);
+    }
+
+    match /schedules/{scheduleId} {
+      allow read: if isSignedIn() && isValidId(scheduleId);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(scheduleId) && isValidSchedule(incoming()) && incoming().keys().size() <= 20;
+      allow update: if isSignedIn() && isValidId(scheduleId) && isValidSchedule(incoming());
+      allow delete: if isSignedIn() && isValidId(scheduleId);
+    }
+
+    match /setlists/{setlistId} {
+      allow read: if isSignedIn() && isValidId(setlistId);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(setlistId) && isValidSetlist(incoming()) && incoming().keys().size() <= 6;
+      allow update: if isSignedIn() && isValidId(setlistId) && isValidSetlist(incoming());
+      allow delete: if isSignedIn() && isValidId(setlistId);
+    }
+
+    match /blackout_dates/{blackoutId} {
+      allow read: if isSignedIn() && isValidId(blackoutId);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(blackoutId) && isValidBlackoutDate(incoming()) && incoming().keys().size() <= 3;
+      allow update: if isSignedIn() && isValidId(blackoutId) && isValidBlackoutDate(incoming());
+      allow delete: if isSignedIn() && isValidId(blackoutId);
+    }
+  }
+}

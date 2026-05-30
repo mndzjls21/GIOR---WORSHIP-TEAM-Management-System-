@@ -1,11 +1,25 @@
-<div align="center">
+# Worship Setlist Builder
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+A comprehensive worship setlist builder and planner designed to manage song libraries, structure weekly service schedules, and integrate rehearsal media seamlessly.
 
-  <h1>Built with AI Studio</h2>
+## Features
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+- **Dynamic Setlist Management:** Easily arrange and organize songs into structured setlists.
+- **Song Library:** Track keys, tempos, artists, chords, and tags for your repertoire.
+- **Service Schedules:** Structure specific dates and services with integrated performance blocks.
+- **Rehearsal Integration:** Play embedded YouTube videos or direct media links for rehearsal purposes directly within the app, letting team members review the material easily.
+- **Firebase Backend:** Powered by a real-time Firestore database for synchronous updates across the team.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## Developer
 
-</div>
+**Built by:** Julius Mendoza  
+**Contact:** [juliusmendoza809@gmail.com](mailto:juliusmendoza809@gmail.com)
+
+## Technologies Used
+
+- React 19
+- Vite
+- Tailwind CSS
+- Firebase Firestore & Realtime DB
+- `lucide-react` for iconography
+- `react-player` for multimedia embedded playback

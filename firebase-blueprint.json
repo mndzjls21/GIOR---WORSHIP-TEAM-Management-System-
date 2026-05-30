@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Song": {
+      "title": "Song",
+      "description": "A worship song in the library",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "artist": { "type": "string" },
+        "original_key": { "type": "string" },
+        "bpm": { "type": "number" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "lyrics_chords": { "type": "string" },
+        "media_url": { "type": "string" },
+        "createdAt": { "type": "number", "description": "Timestamp" }
+      },
+      "required": ["title", "artist", "original_key", "bpm", "lyrics_chords", "createdAt"]
+    },
+    "Schedule": {
+      "title": "Schedule",
+      "description": "A Sunday worship schedule",
+      "type": "object",
+      "properties": {
+        "service_date": { "type": "string" },
+        "worship_leader": { "type": "string" },
+        "band_keys": { "type": "string" },
+        "band_guitar": { "type": "string" },
+        "band_bass": { "type": "string" },
+        "band_drums": { "type": "string" },
+        "vocals": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["service_date", "createdAt"]
+    },
+    "Setlist": {
+      "title": "Setlist",
+      "description": "A song in a specific schedule's setlist",
+      "type": "object",
+      "properties": {
+        "schedule_id": { "type": "string" },
+        "song_id": { "type": "string" },
+        "sort_order": { "type": "number" },
+        "service_label": { "type": "string" },
+        "target_key": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["schedule_id", "song_id", "sort_order", "target_key", "createdAt"]
+    },
+    "BlackoutDate": {
+      "title": "Blackout Date",
+      "description": "A date when a member is unavailable",
+      "type": "object",
+      "properties": {
+        "member_name": { "type": "string" },
+        "unavailable_date": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["member_name", "unavailable_date", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/songs/{songId}": {
+      "schema": { "$ref": "#/entities/Song" },
+      "description": "Song library"
+    },
+    "/schedules/{scheduleId}": {
+      "schema": { "$ref": "#/entities/Schedule" },
+      "description": "Worship schedules"
+    },
+    "/setlists/{setlistId}": {
+      "schema": { "$ref": "#/entities/Setlist" },
+      "description": "Setlists mapping songs to schedules"
+    },
+    "/blackout_dates/{blackoutId}": {
+      "schema": { "$ref": "#/entities/BlackoutDate" },
+      "description": "Volunteer blackout dates"
+    }
+  }
+}
