@@ -254,7 +254,7 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
     <>
       <div className="flex items-baseline justify-between mb-8 mt-4 lg:mt-0">
         <h2 className="text-4xl font-serif italic text-slate-900 dark:text-white">
-          Sunday Service <span className="text-sm font-sans not-italic text-slate-500 dark:text-zinc-400 ml-4">{schedule.service_date}</span>
+          Sunday Service <span className="text-sm font-sans not-italic text-slate-600 dark:text-zinc-400 ml-4">{schedule.service_date}</span>
         </h2>
         {setlist.length > 0 && (
           <button 
@@ -267,7 +267,7 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
       </div>
 
       <div className="mb-6 relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-zinc-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-zinc-400" />
         <input 
           type="text" 
           placeholder="Search songs in setlist..." 
@@ -288,7 +288,7 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
         )}
       >
         {filteredSetlist.length === 0 && !isDragOver && (
-          <p className="text-slate-500 dark:text-zinc-400 text-sm font-medium">
+          <p className="text-slate-600 dark:text-zinc-400 text-sm font-medium">
             {searchTerm ? "No songs match your search." : "Drag and drop songs from the repository here."}
           </p>
         )}
@@ -313,7 +313,7 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
                       <span className={cn(
                         "text-[9px] uppercase tracking-tighter font-bold transition-colors",
                         t.type === 'danger' ? "text-red-600 dark:text-red-400" : 
-                        t.type === 'warning' ? "text-slate-700 dark:text-slate-300" : "text-emerald-700 dark:text-emerald-400"
+                        t.type === 'warning' ? "text-slate-800 dark:text-slate-300" : "text-emerald-700 dark:text-emerald-400"
                       )}>
                         {t.msg}
                       </span>
@@ -336,7 +336,7 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
                 )}
               >
                 <div className="flex flex-wrap md:flex-nowrap items-start md:items-center p-3 md:p-4 gap-3 md:gap-4" onClick={() => setActiveSongId(isSelected ? null : item.id)}>
-                  <div className="flex items-center text-slate-500 dark:text-zinc-400 cursor-grab active:cursor-grabbing hover:text-slate-500 dark:text-zinc-400 mt-1 md:mt-0">
+                  <div className="flex items-center text-slate-600 dark:text-zinc-400 cursor-grab active:cursor-grabbing hover:text-slate-600 dark:text-zinc-400 mt-1 md:mt-0">
                     <GripVertical className="w-4 h-4 mr-1 lg:mr-2" />
                     <span className="font-mono text-[10px] md:text-xs">{String(originalIndex + 1).padStart(2, '0')}</span>
                   </div>
@@ -369,11 +369,11 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
                   <div className="text-right flex items-center gap-4 cursor-default" onClick={e => e.stopPropagation()}>
                     <div className="text-right">
                       <div className="flex items-center gap-1">
-                        <span className="text-xs text-slate-500 dark:text-zinc-400">Key of</span>
+                        <span className="text-xs text-slate-600 dark:text-zinc-400">Key of</span>
                         <select 
                           value={item.target_key}
                           onChange={(e) => updateSetlist(item.id, { target_key: e.target.value })}
-                          className="bg-transparent text-xs text-slate-500 dark:text-zinc-400 font-bold focus:outline-none cursor-pointer"
+                          className="bg-transparent text-xs text-slate-600 dark:text-zinc-400 font-bold focus:outline-none cursor-pointer"
                         >
                           <option className="bg-white dark:bg-zinc-900 transition-colors" value="Nashville">Nashville</option>
                           {['C','C#','Db','D','Eb','E','F','F#','Gb','G','Ab','A','Bb','B'].map(k => (
@@ -381,12 +381,12 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
                           ))}
                         </select>
                       </div>
-                      <div className="text-xs font-mono text-slate-500 dark:text-zinc-400 mt-1">{item.song.bpm} BPM</div>
+                      <div className="text-xs font-mono text-slate-600 dark:text-zinc-400 mt-1">{item.song.bpm} BPM</div>
                     </div>
                     
                     <button 
                       onClick={(e) => { e.stopPropagation(); removeSetlist(item.id); }}
-                      className="p-1.5 text-slate-500 dark:text-zinc-400 hover:text-red-400 transition-colors ml-2"
+                      className="p-1.5 text-slate-600 dark:text-zinc-400 hover:text-red-400 transition-colors ml-2"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -394,7 +394,7 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
                 </div>
 
                 {isSelected && (
-                  <div className="border-t border-slate-300 dark:border-white/5 transition-colors bg-black/40">
+                  <div className="border-t border-slate-300 dark:border-white/5 transition-colors bg-slate-100 dark:bg-black/40">
                     <LiveTransposer song={item.song} targetKey={item.target_key} />
                   </div>
                 )}

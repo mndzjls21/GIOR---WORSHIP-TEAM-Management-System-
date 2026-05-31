@@ -51,13 +51,13 @@ export default function App() {
           <div className="flex bg-slate-100 dark:bg-black/40 rounded p-1 border border-slate-200 dark:border-white/5 transition-colors">
             <button
               onClick={() => setCurrentView('planner')}
-              className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded ${currentView === 'planner' ? 'bg-slate-900 dark:bg-slate-200 text-white dark:text-black' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
+              className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded ${currentView === 'planner' ? 'bg-slate-900 dark:bg-slate-200 text-white dark:text-black' : 'text-slate-600 hover:text-slate-900 dark:text-slate-500 dark:hover:text-white'}`}
             >
               Planner
             </button>
             <button
               onClick={() => setCurrentView('calendar')}
-              className={`flex items-center gap-2 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded transition-colors ${currentView === 'calendar' ? 'bg-slate-900 dark:bg-slate-200 text-white dark:text-black' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
+              className={`flex items-center gap-2 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded transition-colors ${currentView === 'calendar' ? 'bg-slate-900 dark:bg-slate-200 text-white dark:text-black' : 'text-slate-600 hover:text-slate-900 dark:text-slate-500 dark:hover:text-white'}`}
             >
               <Users className="w-3 h-3 hidden sm:block" />
               Roster
@@ -71,7 +71,7 @@ export default function App() {
               className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-bold uppercase text-slate-800 dark:text-white/80 rounded px-3 py-1.5 focus:outline-none focus:border-slate-500 transition-colors max-w-[140px] md:max-w-xs truncate"
             >
               {schedules.length === 0 && (
-                <option value="" disabled className="bg-white dark:bg-zinc-900 text-slate-400 dark:text-white/50">No Services Yet</option>
+                <option value="" disabled className="bg-white dark:bg-zinc-900 text-slate-500 dark:text-white/50">No Services Yet</option>
               )}
               {schedules.map(s => (
                 <option key={s.id} value={s.id} className="bg-white dark:bg-zinc-900 text-slate-900 dark:text-white"> {s.service_date} Service </option>
@@ -97,9 +97,9 @@ export default function App() {
                {!selectedSchedule && (
                  <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50 py-12 lg:py-0">
                    <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/5 flex items-center justify-center mb-4 transition-colors">
-                     <CalendarCheck className="w-5 h-5 text-slate-500 dark:text-white/50" />
+                     <CalendarCheck className="w-5 h-5 text-slate-600 dark:text-white/50" />
                    </div>
-                   <p className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-white/50">Select or create</p>
+                   <p className="text-[10px] uppercase tracking-widest text-slate-600 dark:text-white/50">Select or create</p>
                  </div>
                )}
             </aside>
@@ -109,10 +109,10 @@ export default function App() {
                ) : (
                  <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
                    <div className="w-16 h-16 rounded bg-slate-200 dark:bg-white/5 flex items-center justify-center mb-6 transition-colors">
-                     <Music2 className="w-6 h-6 text-slate-400 dark:text-white/20" />
+                     <Music2 className="w-6 h-6 text-slate-500 dark:text-white/20" />
                    </div>
-                   <h2 className="text-xl font-serif italic text-slate-500 dark:text-white/50 mb-2">No Service Selected</h2>
-                   <p className="text-sm text-slate-400 dark:text-white/30 max-w-sm">Create a new service schedule using the button in the top right to begin building a setlist.</p>
+                   <h2 className="text-xl font-serif italic text-slate-600 dark:text-white/50 mb-2">No Service Selected</h2>
+                   <p className="text-sm text-slate-500 dark:text-white/30 max-w-sm">Create a new service schedule using the button in the top right to begin building a setlist.</p>
                  </div>
                )}
             </section>
@@ -126,8 +126,8 @@ export default function App() {
       )}
 
       <footer className="h-8 bg-slate-200 dark:bg-zinc-800 flex items-center justify-between px-6 z-20 shrink-0 border-t border-slate-300 dark:border-transparent transition-colors">
-        <div className="text-slate-500 dark:text-slate-400 text-[9px] font-bold uppercase tracking-[0.15em]">System Status: All systems operational</div>
-        <div className="text-slate-500 dark:text-slate-400 text-[9px] font-bold uppercase tracking-[0.15em]">Auto-Syncing to Cloud Database...</div>
+        <div className="text-slate-600 dark:text-slate-500 text-[9px] font-bold uppercase tracking-[0.15em]">System Status: All systems operational</div>
+        <div className="text-slate-600 dark:text-slate-500 text-[9px] font-bold uppercase tracking-[0.15em]">Auto-Syncing to Cloud Database...</div>
       </footer>
 
       {showCreateModal && <CreateScheduleModal onClose={() => setShowCreateModal(false)} />}
@@ -161,11 +161,11 @@ function CreateScheduleModal({ onClose }: { onClose: () => void }) {
       <div className="bg-white dark:bg-[#0f0f0f] border border-slate-200 dark:border-white/10 rounded-lg w-full max-w-sm shadow-2xl overflow-hidden flex flex-col font-sans transition-colors">
         <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0a0a] transition-colors">
           <h3 className="text-sm uppercase tracking-widest font-bold text-slate-900 dark:text-slate-200">New Service</h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-900 dark:text-white/40 dark:hover:text-white transition-colors">✕</button>
+          <button onClick={onClose} className="p-1 text-slate-500 hover:text-slate-900 dark:text-white/40 dark:hover:text-white transition-colors">✕</button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-[10px] uppercase tracking-widest text-slate-500 dark:text-white/40 mb-1">Service Date</label>
+            <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-white/40 mb-1">Service Date</label>
             <input 
               type="date" required value={dateStr} onChange={e => setDateStr(e.target.value)}
               className="w-full bg-slate-50 dark:bg-[#0a0a0a] border border-slate-200 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 transition-colors"

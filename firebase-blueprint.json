@@ -28,6 +28,7 @@
         "band_bass": { "type": "string" },
         "band_drums": { "type": "string" },
         "vocals": { "type": "string" },
+        "notes": { "type": "string" },
         "createdAt": { "type": "number" }
       },
       "required": ["service_date", "createdAt"]

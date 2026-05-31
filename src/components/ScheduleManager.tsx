@@ -102,10 +102,10 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
     <>
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-zinc-400">Roster // {schedule.service_date}</h3>
+          <h3 className="text-[10px] uppercase tracking-[0.2em] text-slate-600 dark:text-zinc-400">Roster // {schedule.service_date}</h3>
           <button 
             onClick={() => setShowBlackoutModal(true)}
-            className="text-[10px] text-slate-500 dark:text-zinc-400 hover:text-red-400 transition-colors"
+            className="text-[10px] text-slate-600 dark:text-zinc-400 hover:text-red-400 transition-colors"
           >
             Blackouts
           </button>
@@ -118,7 +118,7 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
             
             return (
               <div key={role.id} className="flex flex-col">
-                <label className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase">{role.label}</label>
+                <label className="text-[10px] text-slate-600 dark:text-zinc-400 uppercase">{role.label}</label>
                 <div className="flex flex-col mt-1 relative">
                   <input 
                     type="text"
@@ -168,7 +168,7 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
         </div>
 
         <div className="pt-4 mt-6 border-t border-slate-200 dark:border-white/10 transition-colors flex flex-col">
-          <label className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase mb-2">Service Notes & Reminders</label>
+          <label className="text-[10px] text-slate-600 dark:text-zinc-400 uppercase mb-2">Service Notes & Reminders</label>
           <textarea
             value={schedule.notes || ''}
             onChange={(e) => updateRole('notes', e.target.value)}
@@ -181,7 +181,7 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
         <div className="pt-6 mt-6 border-t border-slate-200 dark:border-white/10 transition-colors flex flex-col gap-2">
           <button 
             onClick={handleClearRoster}
-            className="w-full py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 rounded transition-colors border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+            className="w-full py-2 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:hover:bg-white/5 rounded transition-colors border border-transparent hover:border-slate-200 dark:hover:border-white/10"
           >
             Clear Roster
           </button>
@@ -211,7 +211,7 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
               <AlertCircle className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{confirmDialog.title}</h3>
-            <p className="text-sm text-slate-500 dark:text-zinc-400 mb-6">{confirmDialog.message}</p>
+            <p className="text-sm text-slate-600 dark:text-zinc-400 mb-6">{confirmDialog.message}</p>
             <div className="flex gap-3">
               <button 
                 onClick={() => setConfirmDialog(null)}
@@ -265,7 +265,7 @@ function BlackoutBoard({ blackouts, onClose }: { blackouts: BlackoutDate[], onCl
     <div className="bg-white dark:bg-zinc-900 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded-lg w-full max-w-md shadow-2xl overflow-hidden flex flex-col font-sans">
       <div className="flex items-center justify-between p-4 border-b border-slate-300 dark:border-white/10 transition-colors bg-slate-50 dark:bg-zinc-950 transition-colors">
         <h3 className="text-sm uppercase tracking-widest font-bold text-slate-900 dark:text-slate-100">Blackout Board</h3>
-        <button onClick={onClose} className="p-1 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:text-white transition-colors">
+        <button onClick={onClose} className="p-1 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:text-white transition-colors">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -274,14 +274,14 @@ function BlackoutBoard({ blackouts, onClose }: { blackouts: BlackoutDate[], onCl
         <form onSubmit={handleAdd} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-               <label className="block text-[10px] uppercase tracking-widest text-slate-500 dark:text-zinc-400 mb-1">Name</label>
+               <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-1">Name</label>
                <input 
                  type="text" required placeholder="e.g. David" value={name} onChange={e => setName(e.target.value)}
                  className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
                />
             </div>
             <div>
-               <label className="block text-[10px] uppercase tracking-widest text-slate-500 dark:text-zinc-400 mb-1">Date</label>
+               <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-1">Date</label>
                <input 
                  type="date" required value={date} onChange={e => setDate(e.target.value)}
                  className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
@@ -298,13 +298,13 @@ function BlackoutBoard({ blackouts, onClose }: { blackouts: BlackoutDate[], onCl
             <div key={b.id} className="flex items-center justify-between text-sm p-3 rounded bg-slate-200 dark:bg-white/5 transition-colors border border-slate-300 dark:border-white/10 transition-colors">
               <span className="font-medium text-slate-900 dark:text-white">{b.member_name}</span>
               <div className="flex items-center gap-4">
-                <span className="font-mono text-xs text-slate-500 dark:text-zinc-400">{b.unavailable_date}</span>
-                <button onClick={() => remove(b.id)} className="text-slate-500 dark:text-zinc-400 hover:text-red-400 transition-colors"><X className="w-3 h-3"/></button>
+                <span className="font-mono text-xs text-slate-600 dark:text-zinc-400">{b.unavailable_date}</span>
+                <button onClick={() => remove(b.id)} className="text-slate-600 dark:text-zinc-400 hover:text-red-400 transition-colors"><X className="w-3 h-3"/></button>
               </div>
             </div>
           ))}
           {blackouts.length === 0 && (
-            <div className="text-center p-4 text-[10px] uppercase tracking-widest text-slate-500 dark:text-zinc-400">No blackouts logged.</div>
+            <div className="text-center p-4 text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400">No blackouts logged.</div>
           )}
         </div>
       </div>

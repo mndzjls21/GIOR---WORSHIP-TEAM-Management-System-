@@ -10,7 +10,7 @@ function YouTubeEmbed({ url, label }: { url: string, label: string }) {
 
   return (
     <div className="mt-4">
-      <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-zinc-400 block mb-2">{label}</span>
+      <span className="text-[10px] font-bold uppercase text-slate-600 dark:text-zinc-400 block mb-2">{label}</span>
       {videoId ? (
         <div className="relative w-full aspect-video rounded overflow-hidden border border-slate-300 dark:border-white/10">
           <iframe
@@ -32,7 +32,6 @@ function YouTubeEmbed({ url, label }: { url: string, label: string }) {
 
 export default function LiveTransposer({ song, targetKey }: { song: Song, targetKey: string }) {
   const [textSize, setTextSize] = useState(24); // 24px default (text-2xl)
-  const [isDark, setIsDark] = useState(true);
 
   // Render lyrics block, parsing bracketed chords dynamically
   const renderLyrics = (text: string) => {
@@ -65,7 +64,7 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
 
       if (!hasBracketChords && !plainChords) {
         return (
-          <div key={lineIdx} className={cn("relative min-h-[2rem]", isDark ? "text-white" : "text-black")} style={{ fontSize: `${textSize}px` }}>
+          <div key={lineIdx} className="relative min-h-[2rem] text-slate-900 dark:text-white" style={{ fontSize: `${textSize}px` }}>
             {line}
           </div>
         );
@@ -80,7 +79,7 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
         }).join('');
 
         return (
-          <div key={lineIdx} className={cn("relative min-h-[2rem] font-sans font-bold", isDark ? "text-blue-400" : "text-blue-700")} style={{ fontSize: `${textSize * 0.8}px` }}>
+          <div key={lineIdx} className="relative min-h-[2rem] font-sans font-bold text-blue-700 dark:text-blue-400" style={{ fontSize: `${textSize * 0.8}px` }}>
             <span className="whitespace-pre">{resolved}</span>
           </div>
         );
@@ -98,8 +97,8 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
         
         parsedElements.push(
           <span key={`group-${regexMatch.index}`} className="relative inline-flex flex-col items-start leading-relaxed">
-            <span className={cn("font-sans text-sm font-bold absolute -top-5", isDark ? "text-blue-400" : "text-blue-700")}>[{chord}]</span>
-            <span className={cn("whitespace-pre", isDark ? "text-white" : "text-black")} style={{ fontSize: `${textSize}px` }}>{textBefore === '' ? '\u200B' : textBefore}</span>
+            <span className="font-sans text-sm font-bold absolute -top-5 text-blue-700 dark:text-blue-400">[{chord}]</span>
+            <span className="whitespace-pre text-slate-900 dark:text-white" style={{ fontSize: `${textSize}px` }}>{textBefore === '' ? '\u200B' : textBefore}</span>
           </span>
         );
         lastIndex = regexMatch.index + regexMatch[0].length;
@@ -108,7 +107,7 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
       const trailingText = line.substring(lastIndex);
       if (trailingText) {
          parsedElements.push(
-           <span key="trailing" className={cn("leading-relaxed whitespace-pre", isDark ? "text-white" : "text-black")} style={{ fontSize: `${textSize}px` }}>{trailingText}</span>
+           <span key="trailing" className="leading-relaxed whitespace-pre text-slate-900 dark:text-white" style={{ fontSize: `${textSize}px` }}>{trailingText}</span>
          );
       }
 
@@ -123,18 +122,18 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
   const hasAnyVideo = song.media_url || song.instrumental_guide_guitar || song.instrumental_guide_piano;
 
   return (
-    <div className={cn("flex flex-col h-full", isDark ? "bg-black/60" : "bg-white")}>
+    <div className="flex flex-col h-full bg-white dark:bg-black/60 transition-colors">
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         <div className="flex-1 p-8 font-serif overflow-y-auto relative h-full">
-          <div className={cn("absolute inset-x-0 top-0 h-8 pointer-events-none bg-gradient-to-b from-[var(--bg-color)] via-[var(--bg-color)] to-transparent z-10")} style={{ '--bg-color': isDark ? '#0f0f0f' : '#ffffff' } as React.CSSProperties}></div>
+          <div className="absolute inset-x-0 top-0 h-8 pointer-events-none bg-gradient-to-b from-white via-white dark:from-[#0d0d0d] dark:via-[#0d0d0d] to-transparent z-10 transition-colors"></div>
           
-          <div className="space-y-4 leading-relaxed pb-12 relative z-10 w-full">
+          <div className="space-y-4 leading-relaxed pb-12 relative z-10 w-full font-medium">
             {renderLyrics(song.lyrics_chords)}
           </div>
         </div>
 
         {hasAnyVideo && (
-          <div className="w-full lg:w-96 p-8 overflow-y-auto border-t lg:border-t-0 lg:border-l border-slate-300 dark:border-white/10 shrink-0 bg-black/10 dark:bg-white/5">
+          <div className="w-full lg:w-96 p-8 overflow-y-auto border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-white/10 shrink-0 bg-slate-50 dark:bg-white/5 transition-colors">
             <div className="flex flex-col gap-6">
               {song.media_url && <YouTubeEmbed url={song.media_url} label="Media / Reference" />}
               {song.instrumental_guide_guitar && <YouTubeEmbed url={song.instrumental_guide_guitar} label="Guitar Guide" />}
@@ -144,10 +143,9 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
         )}
       </div>
       
-      <div className={cn("p-4 flex flex-col sm:flex-row gap-2 border-t w-full", isDark ? "border-slate-300 dark:border-white/5 transition-colors bg-slate-50 dark:bg-zinc-950 transition-colors" : "border-black/10 bg-gray-50")}>
-        <button onClick={() => setIsDark(!isDark)} className={cn("flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors", isDark ? "bg-slate-200 dark:bg-white/5 transition-colors text-slate-900 dark:text-white hover:bg-slate-200 dark:bg-white/5 transition-colors" : "bg-black/10 text-black hover:bg-black/20")}>Toggle Dark/Light</button>
-        <button onClick={() => setTextSize(s => Math.max(16, s - 2))} className={cn("flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors", isDark ? "bg-slate-200 dark:bg-white/5 transition-colors text-slate-900 dark:text-white hover:bg-slate-200 dark:bg-white/5 transition-colors" : "bg-black/10 text-black hover:bg-black/20")}>Text Size -</button>
-        <button onClick={() => setTextSize(s => Math.min(48, s + 2))} className={cn("flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors", isDark ? "bg-slate-200 dark:bg-white/5 transition-colors text-slate-900 dark:text-white hover:bg-slate-200 dark:bg-white/5 transition-colors" : "bg-black/10 text-black hover:bg-black/20")}>Text Size +</button>
+      <div className="p-4 flex flex-col sm:flex-row gap-2 border-t w-full border-slate-200 dark:border-white/10 transition-colors bg-slate-50 dark:bg-zinc-950">
+        <button onClick={() => setTextSize(s => Math.max(16, s - 2))} className="flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors bg-slate-200 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-white/10">Text Size -</button>
+        <button onClick={() => setTextSize(s => Math.min(48, s + 2))} className="flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors bg-slate-200 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-white/10">Text Size +</button>
       </div>
     </div>
   );

@@ -42,7 +42,8 @@ service cloud.firestore {
         && (!('backup_vocals' in data) || (data.backup_vocals is string && data.backup_vocals.size() <= 300))
         && (!('projectionist' in data) || (data.projectionist is string && data.projectionist.size() <= 100))
         && (!('livestreamer' in data) || (data.livestreamer is string && data.livestreamer.size() <= 100))
-        && (!('photographer' in data) || (data.photographer is string && data.photographer.size() <= 100));
+        && (!('photographer' in data) || (data.photographer is string && data.photographer.size() <= 100))
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 5000));
     }
 
     function isValidSetlist(data) {
