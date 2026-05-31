@@ -121,15 +121,40 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
                 <label className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase">{role.label}</label>
                 <div className="flex flex-col mt-1 relative">
                   <input 
-                    type="text" 
+                    type="text"
+                    list={`members-list-${schedule.id}-${role.id}`}
                     value={val}
                     onChange={(e) => updateRole(role.id, e.target.value)}
-                    placeholder={`...`}
+                    placeholder="Select or type..."
                     className={cn(
                       "w-full bg-transparent border-b text-slate-900 dark:text-white text-sm focus:outline-none transition-all pb-1",
                       warning ? "border-slate-300 dark:border-slate-700 transition-colors" : "border-slate-300 dark:border-white/10 transition-colors focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
                     )}
                   />
+                  <datalist id={`members-list-${schedule.id}-${role.id}`}>
+                    {[
+                      "Adora Fajardo",
+                      "Cristina Recondo",
+                      "Dionalyn Leonardo",
+                      "Farah Borromeo",
+                      "JC Mendoza",
+                      "Jilson Reverente",
+                      "John Mark Recondo",
+                      "John Patrick Leonardo",
+                      "John Paul Borromeo",
+                      "JP Recondo",
+                      "Juan Enrico Ronquillo",
+                      "Kim Mendoza",
+                      "Maria Menchie De Lumban",
+                      "Mark John Casada",
+                      "Nicole Joy Quiminiano",
+                      "Paul David Fajardo",
+                      "Sunny Rosantos",
+                      "Yasmeen Borromeo"
+                    ].map(member => (
+                      <option key={member} value={member} />
+                    ))}
+                  </datalist>
                   {warning && (
                     <div className="mt-1 flex items-center justify-between">
                       <span></span>
