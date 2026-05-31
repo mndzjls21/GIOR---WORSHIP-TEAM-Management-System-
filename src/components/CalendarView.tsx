@@ -36,13 +36,13 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
   const toggleMonth = (month: string) => {
     setExpandedMonths(prev => ({
       ...prev,
-      [month]: prev[month] === undefined ? false : !prev[month]
+      [month]: prev[month] === undefined ? true : !prev[month]
     }));
   };
 
   const isMonthExpanded = (month: string, index: number) => {
     if (expandedMonths[month] !== undefined) return expandedMonths[month];
-    return index === 0; // The first month is expanded by default
+    return false; // Default to collapsed
   };
 
   const handleDownloadPNG = async (monthYear: string, e: React.MouseEvent) => {
