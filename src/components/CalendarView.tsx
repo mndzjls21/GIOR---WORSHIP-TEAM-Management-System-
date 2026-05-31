@@ -60,7 +60,7 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
         const isDark = document.documentElement.classList.contains('dark');
         const dataUrl = await toPng(element, {
           backgroundColor: isDark ? '#18181b' : '#ffffff', // zinc-900 or white
-          pixelRatio: 2,
+          pixelRatio: 3,
           filter: (node) => {
             if (node?.hasAttribute && node.hasAttribute('data-html2canvas-ignore')) {
               return false;
@@ -122,7 +122,7 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-zinc-950 transition-colors p-4 md:p-8 min-h-0 container mx-auto">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-zinc-950 transition-colors p-4 md:p-8 min-h-0 w-full max-w-5xl mx-auto">
       <div className="mb-6 flex justify-between items-end">
         <div>
           <h2 className="text-2xl md:text-3xl font-serif italic text-slate-900 dark:text-white mb-2">Team Roster</h2>
@@ -137,35 +137,35 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
           Object.entries(groupedSchedules).map(([monthYear, monthSchedules], index) => {
             const expanded = isMonthExpanded(monthYear, index);
             return (
-            <div key={monthYear} id={`export-${monthYear.replace(/ /g, '-')}`} className={`flex flex-col gap-4 rounded-xl ${exportingMonth === monthYear ? 'w-[1200px] min-w-[1200px] p-8 md:p-12 bg-slate-50 dark:bg-zinc-950' : ''}`}>
+            <div key={monthYear} id={`export-${monthYear.replace(/ /g, '-')}`} className={`flex flex-col gap-4 rounded-xl ${exportingMonth === monthYear ? 'w-[768px] min-w-[768px] p-8 md:p-12 bg-slate-50 dark:bg-zinc-950 mx-auto' : ''}`}>
               {exportingMonth === monthYear && (
                 <div className="text-center mb-6 pt-4 border-b border-slate-200 dark:border-white/10 pb-8">
-                  <h2 className="text-3xl md:text-5xl font-serif italic text-slate-900 dark:text-white mb-3">Schedule for {monthYear}</h2>
-                  <p className="text-slate-500 dark:text-zinc-400 capitalize tracking-widest text-xs font-bold font-sans">GIOR // Worship Team Roster</p>
+                  <h2 className="text-4xl md:text-5xl font-serif italic text-slate-900 dark:text-white mb-3">Schedule for {monthYear}</h2>
+                  <p className="text-slate-500 dark:text-zinc-400 capitalize tracking-widest text-sm font-bold font-sans">GIOR // Worship Team Roster</p>
                 </div>
               )}
               {exportingMonth !== monthYear && (
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => toggleMonth(monthYear)}
-                    className="flex items-center gap-4 text-left group bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/10 rounded-lg p-4 hover:border-slate-300 dark:hover:border-white/20 transition-colors shadow-sm dark:shadow-none flex-1"
+                    className="flex items-center gap-2 md:gap-4 text-left group bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/10 rounded-lg p-3 md:p-4 hover:border-slate-300 dark:hover:border-white/20 transition-colors shadow-sm dark:shadow-none flex-1 min-w-0"
                   >
-                    <div className="flex items-center justify-center bg-slate-100 dark:bg-white/5 w-8 h-8 rounded text-slate-600 dark:text-zinc-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                    <div className="flex shrink-0 items-center justify-center bg-slate-100 dark:bg-white/5 w-8 h-8 rounded text-slate-600 dark:text-zinc-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                       {expanded ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{monthYear}</h3>
-                    <div className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 ml-auto bg-slate-100 dark:bg-white/5 px-3 py-1 rounded">
+                    <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white truncate">{monthYear}</h3>
+                    <div className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 ml-auto bg-slate-100 dark:bg-white/5 px-2 md:px-3 py-1 rounded shrink-0 whitespace-nowrap hidden sm:block">
                       {monthSchedules.length} {monthSchedules.length === 1 ? 'Service' : 'Services'}
                     </div>
                   </button>
                   {expanded && (
                     <button 
                       onClick={(e) => handleDownloadPNG(monthYear, e)}
-                      className="flex shrink-0 items-center gap-2 bg-slate-900 dark:bg-slate-200 text-white dark:text-black px-4 py-4 rounded-lg font-bold uppercase tracking-widest text-[10px] hover:bg-slate-800 dark:hover:bg-white transition-colors h-[66px]"
+                      className="flex shrink-0 items-center justify-center gap-2 bg-slate-900 dark:bg-slate-200 text-white dark:text-black p-3 sm:px-4 sm:py-4 rounded-lg font-bold uppercase tracking-widest text-[10px] hover:bg-slate-800 dark:hover:bg-white transition-colors self-stretch sm:h-[66px]"
                       title="Download schedule as image"
                     >
-                      <Download className="w-4 h-4" />
-                      Download PNG
+                      <Download className="w-5 h-5 sm:w-4 sm:h-4" />
+                      <span className="hidden sm:inline">Download PNG</span>
                     </button>
                   )}
                 </div>
@@ -177,8 +177,8 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
                   <div key={schedule.id} className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/10 transition-colors rounded-lg p-6 relative overflow-hidden group shadow-sm dark:shadow-none">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-800 dark:bg-slate-200 transition-colors"></div>
                     
-                    <div className={exportingMonth === monthYear ? "flex flex-row gap-8" : "flex flex-col md:flex-row gap-8"}>
-                      <div className={exportingMonth === monthYear ? "w-1/4 shrink-0 border-r border-slate-200 dark:border-white/10 pr-4" : "w-full md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/10 transition-colors pb-4 md:pb-0 md:pr-4"}>
+                    <div className={exportingMonth === monthYear ? "flex flex-col gap-6" : "flex flex-col md:flex-row gap-8"}>
+                      <div className={exportingMonth === monthYear ? "w-full border-b border-slate-200 dark:border-white/10 pb-4" : "w-full md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/10 transition-colors pb-4 md:pb-0 md:pr-4"}>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter mb-1 mt-1">
                           {format(parseISO(schedule.service_date), 'MMM d, yyyy')}
                         </h3>
@@ -206,17 +206,17 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
                         )}
                       </div>
 
-                      <div className={exportingMonth === monthYear ? "grid grid-cols-4 gap-x-6 gap-y-4 w-full" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4 w-full"}>
-                        <RosterItem label="Presider" value={schedule.presider} highlight />
-                        <RosterItem label="Lead Guitar" value={schedule.lead_guitar} />
-                        <RosterItem label="Acoustic Guitarist" value={schedule.acoustic_guitar} />
-                        <RosterItem label="Bassist" value={schedule.bassist} />
-                        <RosterItem label="Keyboardist" value={schedule.keyboardist} />
-                        <RosterItem label="Drummer" value={schedule.drummer} />
-                        <RosterItem label="Back Up/Vocals" value={schedule.backup_vocals} />
-                        <RosterItem label="Projectionist" value={schedule.projectionist} />
-                        <RosterItem label="Livestreamer" value={schedule.livestreamer} />
-                        <RosterItem label="Photographer" value={schedule.photographer} />
+                      <div className={exportingMonth === monthYear ? "grid grid-cols-2 lg:grid-cols-2 gap-x-6 gap-y-6 w-full" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4 w-full"}>
+                        <RosterItem exporting={exportingMonth === monthYear} label="Presider" value={schedule.presider} highlight />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Lead Guitar" value={schedule.lead_guitar} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Acoustic Guitarist" value={schedule.acoustic_guitar} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Bassist" value={schedule.bassist} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Keyboardist" value={schedule.keyboardist} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Drummer" value={schedule.drummer} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Back Up/Vocals" value={schedule.backup_vocals} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Projectionist" value={schedule.projectionist} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Livestreamer" value={schedule.livestreamer} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Photographer" value={schedule.photographer} />
                       </div>
                     </div>
 
@@ -266,12 +266,12 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
   )
 }
 
-function RosterItem({ label, value, highlight }: { label: string, value: string | undefined, highlight?: boolean }) {
+function RosterItem({ label, value, highlight, exporting }: { label: string, value: string | undefined, highlight?: boolean, exporting?: boolean }) {
   if (highlight) {
     return (
-      <div className="flex flex-col bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 p-4 rounded-xl col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 mb-2 shadow-sm transition-colors">
-        <span className="text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 font-bold mb-1">{label}</span>
-        <span className="text-base font-bold text-slate-900 dark:text-white">
+      <div className={`flex flex-col bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 p-4 rounded-xl mb-2 shadow-sm transition-colors ${exporting ? 'col-span-1 lg:col-span-2' : 'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4'}`}>
+        <span className={`${exporting ? 'text-xs' : 'text-[10px]'} uppercase tracking-widest text-slate-600 dark:text-zinc-400 font-bold mb-1`}>{label}</span>
+        <span className={`${exporting ? 'text-2xl' : 'text-base'} font-bold text-slate-900 dark:text-white`}>
           {value && value.trim() ? value : <span className="text-slate-500 dark:text-zinc-500 italic font-normal">Unassigned</span>}
         </span>
       </div>
@@ -279,8 +279,8 @@ function RosterItem({ label, value, highlight }: { label: string, value: string 
   }
   return (
     <div className="flex flex-col">
-      <span className="text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-1">{label}</span>
-      <span className="text-sm font-medium text-slate-800 dark:text-zinc-300">
+      <span className={`${exporting ? 'text-sm' : 'text-[10px]'} uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-1`}>{label}</span>
+      <span className={`${exporting ? 'text-xl' : 'text-sm'} font-medium text-slate-800 dark:text-zinc-300`}>
         {value && value.trim() ? value : <span className="text-slate-500 dark:text-zinc-500 italic font-normal">Unassigned</span>}
       </span>
     </div>

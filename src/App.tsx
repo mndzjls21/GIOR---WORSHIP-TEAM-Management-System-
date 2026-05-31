@@ -27,7 +27,7 @@ export default function App() {
   const selectedSchedule = schedules.find(s => s.id === selectedScheduleId);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-800 dark:text-zinc-200 font-sans flex flex-col overflow-hidden transition-colors">
+    <div className="h-[100dvh] bg-slate-50 dark:bg-zinc-950 text-slate-800 dark:text-zinc-200 font-sans flex flex-col overflow-hidden transition-colors">
       <header className="min-h-[4rem] border-b border-slate-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-between p-4 md:px-8 gap-4 bg-white dark:bg-zinc-900 sticky top-0 z-10 transition-colors">
         <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
           <div className="flex items-center gap-3">
