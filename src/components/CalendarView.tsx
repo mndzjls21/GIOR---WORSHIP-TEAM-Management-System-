@@ -114,6 +114,15 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
                   <RosterItem label="Photographer" value={schedule.photographer} />
                 </div>
               </div>
+
+              {schedule.notes && (
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 transition-colors">
+                  <div className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5 font-bold">Notes & Reminders</div>
+                  <div className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
+                    {schedule.notes}
+                  </div>
+                </div>
+              )}
             </div>
           ))
         )}
