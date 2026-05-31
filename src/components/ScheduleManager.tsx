@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Schedule, BlackoutDate } from '../types';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { updateDoc, doc, collection, onSnapshot, query, where, addDoc, deleteDoc } from 'firebase/firestore';
-import { Users, AlertTriangle, X, AlertCircle } from 'lucide-react';
+import { Users, AlertTriangle, X, AlertCircle, Edit2, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
   const [blackouts, setBlackouts] = useState<BlackoutDate[]>([]);
   const [showBlackoutModal, setShowBlackoutModal] = useState(false);
+  const [isEditingDate, setIsEditingDate] = useState(false);
+  const [editDateValue, setEditDateValue] = useState('');
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -98,11 +100,45 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
     }
   };
 
+  const saveDate = async () => {
+    if (!editDateValue) return;
+    try {
+      await updateDoc(doc(db, 'schedules', schedule.id), { service_date: editDateValue });
+      setIsEditingDate(false);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, `schedules/${schedule.id}`);
+    }
+  };
+
   return (
     <>
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-[10px] uppercase tracking-[0.2em] text-slate-600 dark:text-zinc-400">Roster // {schedule.service_date}</h3>
+          <div className="flex items-center gap-2">
+            {isEditingDate ? (
+              <div className="flex items-center gap-2">
+                <input 
+                  type="date"
+                  value={editDateValue}
+                  onChange={e => setEditDateValue(e.target.value)}
+                  className="bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 text-xs px-2 py-1 rounded focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 text-slate-900 dark:text-white"
+                />
+                <button onClick={saveDate} className="text-green-600 dark:text-green-400 hover:text-green-700 transition">
+                  <Check className="w-3 h-3" />
+                </button>
+                <button onClick={() => setIsEditingDate(false)} className="text-slate-500 hover:text-red-500 transition">
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <h3 className="text-[10px] uppercase tracking-[0.2em] text-slate-600 dark:text-zinc-400">Roster // {schedule.service_date}</h3>
+                <button onClick={() => { setEditDateValue(schedule.service_date); setIsEditingDate(true); }} className="text-slate-400 hover:text-slate-700 dark:hover:text-white transition">
+                  <Edit2 className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+          </div>
           <button 
             onClick={() => setShowBlackoutModal(true)}
             className="text-[10px] text-slate-600 dark:text-zinc-400 hover:text-red-400 transition-colors"
