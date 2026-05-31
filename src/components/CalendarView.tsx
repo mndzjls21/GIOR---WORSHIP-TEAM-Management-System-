@@ -122,8 +122,9 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-zinc-950 transition-colors p-4 md:p-8 min-h-0 w-full max-w-5xl mx-auto">
-      <div className="mb-6 flex justify-between items-end">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-zinc-950 transition-colors min-h-0 w-full">
+      <div className="p-4 md:p-8 w-full max-w-5xl mx-auto">
+        <div className="mb-6 flex justify-between items-end">
         <div>
           <h2 className="text-2xl md:text-3xl font-serif italic text-slate-900 dark:text-white mb-2">Team Roster</h2>
           <p className="text-slate-600 dark:text-zinc-400 text-sm">View scheduling for worship team members across all upcoming services.</p>
@@ -263,6 +264,7 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
