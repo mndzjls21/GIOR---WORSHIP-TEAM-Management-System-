@@ -137,7 +137,7 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
           Object.entries(groupedSchedules).map(([monthYear, monthSchedules], index) => {
             const expanded = isMonthExpanded(monthYear, index);
             return (
-            <div key={monthYear} id={`export-${monthYear.replace(/ /g, '-')}`} className={`flex flex-col gap-4 rounded-xl ${exportingMonth === monthYear ? 'p-8 md:p-12 bg-slate-50 dark:bg-zinc-950' : ''}`}>
+            <div key={monthYear} id={`export-${monthYear.replace(/ /g, '-')}`} className={`flex flex-col gap-4 rounded-xl ${exportingMonth === monthYear ? 'w-[1200px] min-w-[1200px] p-8 md:p-12 bg-slate-50 dark:bg-zinc-950' : ''}`}>
               {exportingMonth === monthYear && (
                 <div className="text-center mb-6 pt-4 border-b border-slate-200 dark:border-white/10 pb-8">
                   <h2 className="text-3xl md:text-5xl font-serif italic text-slate-900 dark:text-white mb-3">Schedule for {monthYear}</h2>
@@ -177,8 +177,8 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
                   <div key={schedule.id} className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/10 transition-colors rounded-lg p-6 relative overflow-hidden group shadow-sm dark:shadow-none">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-800 dark:bg-slate-200 transition-colors"></div>
                     
-                    <div className="flex flex-col md:flex-row gap-8">
-                      <div className="w-full md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/10 transition-colors pb-4 md:pb-0 md:pr-4">
+                    <div className={exportingMonth === monthYear ? "flex flex-row gap-8" : "flex flex-col md:flex-row gap-8"}>
+                      <div className={exportingMonth === monthYear ? "w-1/4 shrink-0 border-r border-slate-200 dark:border-white/10 pr-4" : "w-full md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/10 transition-colors pb-4 md:pb-0 md:pr-4"}>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter mb-1 mt-1">
                           {format(parseISO(schedule.service_date), 'MMM d, yyyy')}
                         </h3>
@@ -206,7 +206,7 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
                         )}
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4 w-full">
+                      <div className={exportingMonth === monthYear ? "grid grid-cols-4 gap-x-6 gap-y-4 w-full" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4 w-full"}>
                         <RosterItem label="Presider" value={schedule.presider} highlight />
                         <RosterItem label="Lead Guitar" value={schedule.lead_guitar} />
                         <RosterItem label="Acoustic Guitarist" value={schedule.acoustic_guitar} />
