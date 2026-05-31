@@ -31,8 +31,8 @@ export default function App() {
       <header className="min-h-[4rem] border-b border-slate-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-between p-4 md:px-8 gap-4 bg-white dark:bg-zinc-900 sticky top-0 z-10 transition-colors">
         <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
           <div className="flex items-center gap-3">
-            <div className="bg-slate-900 dark:bg-white w-8 h-8 shrink-0 rounded-sm flex items-center justify-center text-white dark:text-black font-black italic transition-colors">
-              <Music2 className="w-5 h-5" />
+            <div className="bg-slate-900 dark:bg-white px-2.5 h-8 shrink-0 rounded-sm flex items-center justify-center text-white dark:text-black transition-colors relative overflow-hidden">
+              <span className="font-black tracking-tighter text-sm italic">GIOR</span>
             </div>
             <h1 className="text-xl tracking-tighter font-medium text-slate-900 dark:text-white truncate">GIOR Worship Portal</h1>
           </div>
