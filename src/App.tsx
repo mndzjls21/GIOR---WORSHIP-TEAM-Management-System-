@@ -34,7 +34,7 @@ export default function App() {
             <div className="bg-slate-900 dark:bg-white px-2.5 h-8 shrink-0 rounded-sm flex items-center justify-center text-white dark:text-black transition-colors relative overflow-hidden">
               <span className="font-black tracking-tighter text-sm italic">GIOR</span>
             </div>
-            <h1 className="text-xl tracking-tighter font-medium text-slate-900 dark:text-white truncate">GIOR Worship Portal</h1>
+            <h1 className="text-xl tracking-tighter font-medium text-slate-900 dark:text-white truncate">Worship Portal</h1>
           </div>
           <div className="md:hidden">
              <ThemeToggle />

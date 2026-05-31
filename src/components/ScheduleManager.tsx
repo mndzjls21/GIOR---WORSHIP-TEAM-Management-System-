@@ -57,6 +57,7 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
     { id: 'projectionist', label: 'Projectionist' },
     { id: 'livestreamer', label: 'Livestreamer' },
     { id: 'photographer', label: 'Photographer' },
+    { id: 'mixer', label: 'Mixer' },
   ] as const;
 
   const handleClearRoster = () => {
@@ -69,7 +70,7 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
           await updateDoc(doc(db, 'schedules', schedule.id), {
             presider: '', lead_guitar: '', acoustic_guitar: '', bassist: '',
             keyboardist: '', drummer: '', backup_vocals: '', projectionist: '',
-            livestreamer: '', photographer: ''
+            livestreamer: '', photographer: '', mixer: ''
           });
         } catch (err) {
           handleFirestoreError(err, OperationType.UPDATE, `schedules/${schedule.id}`);

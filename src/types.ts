@@ -28,6 +28,7 @@ export interface Schedule {
   projectionist?: string;
   livestreamer?: string;
   photographer?: string;
+  mixer?: string;
   createdAt: number;
 }
 

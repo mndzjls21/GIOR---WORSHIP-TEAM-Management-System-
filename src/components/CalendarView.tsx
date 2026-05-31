@@ -90,7 +90,7 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
           await updateDoc(doc(db, 'schedules', schedule.id), {
             presider: '', lead_guitar: '', acoustic_guitar: '', bassist: '',
             keyboardist: '', drummer: '', backup_vocals: '', projectionist: '',
-            livestreamer: '', photographer: ''
+            livestreamer: '', photographer: '', mixer: ''
           });
         } catch (err) {
           handleFirestoreError(err, OperationType.UPDATE, `schedules/${schedule.id}`);
@@ -217,6 +217,7 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
                         <RosterItem exporting={exportingMonth === monthYear} label="Projectionist" value={schedule.projectionist} />
                         <RosterItem exporting={exportingMonth === monthYear} label="Livestreamer" value={schedule.livestreamer} />
                         <RosterItem exporting={exportingMonth === monthYear} label="Photographer" value={schedule.photographer} />
+                        <RosterItem exporting={exportingMonth === monthYear} label="Mixer" value={schedule.mixer} />
                       </div>
                     </div>
 
