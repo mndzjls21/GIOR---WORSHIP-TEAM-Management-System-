@@ -122,12 +122,12 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-zinc-950 transition-colors min-h-0 w-full">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-[#0a0a0a] transition-colors min-h-0 w-full">
       <div className="p-4 md:p-8 w-full max-w-5xl mx-auto">
-        <div className="mb-6 flex justify-between items-end">
+        <div className="mb-8 flex justify-between items-end border-b border-slate-200 dark:border-white/5 pb-4">
         <div>
-          <h2 className="text-2xl md:text-3xl font-serif italic text-slate-900 dark:text-white mb-2">Team Roster</h2>
-          <p className="text-slate-600 dark:text-zinc-400 text-sm">View scheduling for worship team members across all upcoming services.</p>
+          <h2 className="text-3xl md:text-4xl font-serif italic text-slate-900 dark:text-white mb-2">Team Roster</h2>
+          <p className="text-slate-500 dark:text-zinc-500 text-sm tracking-wide">View scheduling for worship team members across all upcoming services.</p>
         </div>
       </div>
 
@@ -138,11 +138,11 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
           Object.entries(groupedSchedules).map(([monthYear, monthSchedules], index) => {
             const expanded = isMonthExpanded(monthYear, index);
             return (
-            <div key={monthYear} id={`export-${monthYear.replace(/ /g, '-')}`} className={`flex flex-col gap-4 rounded-xl ${exportingMonth === monthYear ? 'w-[768px] min-w-[768px] p-8 md:p-12 bg-slate-50 dark:bg-zinc-950 mx-auto' : ''}`}>
+            <div key={monthYear} id={`export-${monthYear.replace(/ /g, '-')}`} className={`flex flex-col gap-4 rounded-xl ${exportingMonth === monthYear ? 'w-[768px] min-w-[768px] p-8 md:p-12 bg-slate-50 dark:bg-[#0a0a0a] mx-auto' : ''}`}>
               {exportingMonth === monthYear && (
-                <div className="text-center mb-6 pt-4 border-b border-slate-200 dark:border-white/10 pb-8">
+                <div className="text-center mb-6 pt-4 border-b border-slate-200 dark:border-white/5 pb-8">
                   <h2 className="text-4xl md:text-5xl font-serif italic text-slate-900 dark:text-white mb-3">Schedule for {monthYear}</h2>
-                  <p className="text-slate-500 dark:text-zinc-400 capitalize tracking-widest text-sm font-bold font-sans">GIOR // Worship Team Roster</p>
+                  <p className="text-slate-500 dark:text-zinc-500 capitalize tracking-widest text-sm font-bold font-sans">Worship Team Roster</p>
                 </div>
               )}
               {exportingMonth !== monthYear && (
@@ -179,11 +179,11 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-800 dark:bg-slate-200 transition-colors"></div>
                     
                     <div className={exportingMonth === monthYear ? "flex flex-col gap-6" : "flex flex-col md:flex-row gap-8"}>
-                      <div className={exportingMonth === monthYear ? "w-full border-b border-slate-200 dark:border-white/10 pb-4" : "w-full md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/10 transition-colors pb-4 md:pb-0 md:pr-4"}>
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter mb-1 mt-1">
+                      <div className={exportingMonth === monthYear ? "w-full border-b border-slate-200 dark:border-white/5 pb-4" : "w-full md:w-1/4 shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/5 transition-colors pb-4 md:pb-0 md:pr-4"}>
+                        <h3 className="text-2xl font-serif italic text-slate-900 dark:text-white tracking-tight mb-1 mt-1">
                           {format(parseISO(schedule.service_date), 'MMM d, yyyy')}
                         </h3>
-                        <div className="text-slate-900 dark:text-slate-100 text-xs font-bold uppercase tracking-widest mb-4 md:mb-0">
+                        <div className="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-widest mb-4 md:mb-0">
                           Sunday Service
                         </div>
                         
@@ -272,19 +272,19 @@ export default function CalendarView({ schedules }: { schedules: Schedule[] }) {
 function RosterItem({ label, value, highlight, exporting }: { label: string, value: string | undefined, highlight?: boolean, exporting?: boolean }) {
   if (highlight) {
     return (
-      <div className={`flex flex-col bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 p-4 rounded-xl mb-2 shadow-sm transition-colors ${exporting ? 'col-span-1 lg:col-span-2' : 'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4'}`}>
-        <span className={`${exporting ? 'text-xs' : 'text-[10px]'} uppercase tracking-widest text-slate-600 dark:text-zinc-400 font-bold mb-1`}>{label}</span>
-        <span className={`${exporting ? 'text-2xl' : 'text-base'} font-bold text-slate-900 dark:text-white`}>
-          {value && value.trim() ? value : <span className="text-slate-500 dark:text-zinc-500 italic font-normal">Unassigned</span>}
+      <div className={`flex flex-col bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl mb-2 shadow-sm transition-colors ${exporting ? 'col-span-1 lg:col-span-2' : 'col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4'}`}>
+        <span className={`${exporting ? 'text-xs' : 'text-[10px]'} uppercase tracking-widest text-slate-500 dark:text-zinc-500 font-bold mb-1`}>{label}</span>
+        <span className={`${exporting ? 'text-2xl' : 'text-base'} font-bold text-slate-900 dark:text-slate-100`}>
+          {value && value.trim() ? value : <span className="text-slate-400 dark:text-zinc-600 italic font-normal">Unassigned</span>}
         </span>
       </div>
     )
   }
   return (
     <div className="flex flex-col">
-      <span className={`${exporting ? 'text-sm' : 'text-[10px]'} uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-1`}>{label}</span>
-      <span className={`${exporting ? 'text-xl' : 'text-sm'} font-medium text-slate-800 dark:text-zinc-300`}>
-        {value && value.trim() ? value : <span className="text-slate-500 dark:text-zinc-500 italic font-normal">Unassigned</span>}
+      <span className={`${exporting ? 'text-sm' : 'text-[10px]'} uppercase tracking-widest text-slate-500 dark:text-zinc-500 mb-1`}>{label}</span>
+      <span className={`${exporting ? 'text-xl' : 'text-sm'} font-medium text-slate-800 dark:text-slate-300`}>
+        {value && value.trim() ? value : <span className="text-slate-400 dark:text-zinc-600 italic font-normal">Unassigned</span>}
       </span>
     </div>
   )

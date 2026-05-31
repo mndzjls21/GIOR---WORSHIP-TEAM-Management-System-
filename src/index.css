@@ -9,6 +9,10 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+body {
+  @apply antialiased tracking-tight;
+}
+
 /* Minimalist Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

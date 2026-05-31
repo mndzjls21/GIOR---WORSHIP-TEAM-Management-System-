@@ -27,14 +27,18 @@ export default function App() {
   const selectedSchedule = schedules.find(s => s.id === selectedScheduleId);
 
   return (
-    <div className="h-[100dvh] bg-slate-50 dark:bg-zinc-950 text-slate-800 dark:text-zinc-200 font-sans flex flex-col overflow-hidden transition-colors">
-      <header className="min-h-[4rem] border-b border-slate-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-between p-4 md:px-8 gap-4 bg-white dark:bg-zinc-900 sticky top-0 z-10 transition-colors">
+    <div className="h-[100dvh] bg-slate-50 dark:bg-[#0a0a0a] text-slate-800 dark:text-zinc-200 font-sans flex flex-col overflow-hidden transition-colors">
+      <header className="min-h-[4rem] border-b border-slate-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between p-4 md:px-8 gap-4 bg-white dark:bg-[#0f0f0f] sticky top-0 z-10 transition-colors shadow-sm dark:shadow-none">
         <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
-          <div className="flex items-center gap-3">
-            <div className="bg-slate-900 dark:bg-white px-2.5 h-8 shrink-0 rounded-sm flex items-center justify-center text-white dark:text-black transition-colors relative overflow-hidden">
-              <span className="font-black tracking-tighter text-sm italic">GIOR</span>
+          <div className="flex items-center gap-4">
+            <div className="flex relative items-center justify-center w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-950 dark:from-white dark:to-zinc-200 shadow-md ring-1 ring-slate-900/5 dark:ring-white/10 overflow-hidden group">
+              <div className="absolute inset-0 bg-white/10 dark:bg-black/5 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <Music2 className="w-5 h-5 text-white dark:text-slate-900 drop-shadow-sm group-hover:scale-110 transition-transform duration-300" />
             </div>
-            <h1 className="text-xl tracking-tighter font-medium text-slate-900 dark:text-white truncate">Worship Portal</h1>
+            <div className="flex flex-col border-l-2 border-slate-200 dark:border-white/10 pl-3.5 py-0.5 justify-center">
+              <span className="text-[10px] font-mono tracking-[0.3em] font-semibold text-slate-500 dark:text-zinc-500 leading-none mb-1.5 uppercase">GIOR</span>
+              <h1 className="text-[1.35rem] font-serif italic tracking-tight text-slate-900 dark:text-zinc-100 leading-none">Worship Portal</h1>
+            </div>
           </div>
           <div className="md:hidden">
              <ThemeToggle />
