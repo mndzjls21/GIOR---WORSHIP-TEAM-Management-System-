@@ -16,6 +16,7 @@ export interface Song {
 export interface Schedule {
   id: string;
   service_date: string; // YYYY-MM-DD
+  notes?: string;
   presider?: string;
   worship_leader?: string;
   lead_guitar?: string;

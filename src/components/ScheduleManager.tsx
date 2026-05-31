@@ -167,6 +167,17 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
           })}
         </div>
 
+        <div className="pt-4 mt-6 border-t border-slate-200 dark:border-white/10 transition-colors flex flex-col">
+          <label className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase mb-2">Service Notes & Reminders</label>
+          <textarea
+            value={schedule.notes || ''}
+            onChange={(e) => updateRole('notes', e.target.value)}
+            placeholder="Important notes for this service..."
+            rows={3}
+            className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 resize-y"
+          />
+        </div>
+
         <div className="pt-6 mt-6 border-t border-slate-200 dark:border-white/10 transition-colors flex flex-col gap-2">
           <button 
             onClick={handleClearRoster}
