@@ -20,9 +20,6 @@ export default function App() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Schedule));
       setSchedules(data);
-      if (data.length > 0 && !selectedScheduleId) {
-        setSelectedScheduleId(data[0].id);
-      }
     }, (err) => handleFirestoreError(err, OperationType.LIST, 'schedules'));
     return () => unsubscribe();
   }, [selectedScheduleId]);
@@ -70,9 +67,9 @@ export default function App() {
               onChange={(e) => setSelectedScheduleId(e.target.value)}
               className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-bold uppercase text-slate-800 dark:text-white/80 rounded px-3 py-1.5 focus:outline-none focus:border-slate-500 transition-colors max-w-[140px] md:max-w-xs truncate"
             >
-              {schedules.length === 0 && (
-                <option value="" disabled className="bg-white dark:bg-zinc-900 text-slate-500 dark:text-white/50">No Services Yet</option>
-              )}
+              <option value="" disabled className="bg-white dark:bg-zinc-900 text-slate-500 dark:text-white/50">
+                {schedules.length === 0 ? "No Services Yet" : "Select a Date..."}
+              </option>
               {schedules.map(s => (
                 <option key={s.id} value={s.id} className="bg-white dark:bg-zinc-900 text-slate-900 dark:text-white"> {s.service_date} Service </option>
               ))}

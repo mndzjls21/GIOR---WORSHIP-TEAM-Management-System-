@@ -120,17 +120,27 @@ export default function ScheduleManager({ schedule }: { schedule: Schedule }) {
               <div key={role.id} className="flex flex-col">
                 <label className="text-[10px] text-slate-600 dark:text-zinc-400 uppercase">{role.label}</label>
                 <div className="flex flex-col mt-1 relative">
-                  <input 
-                    type="text"
-                    list={`members-list-${schedule.id}-${role.id}`}
-                    value={val}
-                    onChange={(e) => updateRole(role.id, e.target.value)}
-                    placeholder="Select or type..."
-                    className={cn(
-                      "w-full bg-transparent border-b text-slate-900 dark:text-white text-sm focus:outline-none transition-all pb-1",
-                      warning ? "border-slate-300 dark:border-slate-700 transition-colors" : "border-slate-300 dark:border-white/10 transition-colors focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
-                    )}
-                  />
+                  {role.id === 'backup_vocals' ? (
+                    <MultipleRoleInput 
+                      val={val} 
+                      roleId={role.id} 
+                      scheduleId={schedule.id}
+                      warning={!!warning}
+                      onChange={(newVal) => updateRole(role.id, newVal)} 
+                    />
+                  ) : (
+                    <input 
+                      type="text"
+                      list={`members-list-${schedule.id}-${role.id}`}
+                      value={val}
+                      onChange={(e) => updateRole(role.id, e.target.value)}
+                      placeholder="Select or type..."
+                      className={cn(
+                        "w-full bg-transparent border-b text-slate-900 dark:text-white text-sm focus:outline-none transition-all pb-1",
+                        warning ? "border-slate-300 dark:border-slate-700 transition-colors" : "border-slate-300 dark:border-white/10 transition-colors focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
+                      )}
+                    />
+                  )}
                   <datalist id={`members-list-${schedule.id}-${role.id}`}>
                     {[
                       "Adora Fajardo",
@@ -311,3 +321,71 @@ function BlackoutBoard({ blackouts, onClose }: { blackouts: BlackoutDate[], onCl
     </div>
   );
 }
+
+function MultipleRoleInput({ val, warning, roleId, scheduleId, onChange }: { val: string, warning: boolean, roleId: string, scheduleId: string, onChange: (val: string) => void }) {
+  const [inputValue, setInputValue] = useState('');
+  
+  const names = val.split(',').map(n => n.trim()).filter(Boolean);
+  
+  const handleAdd = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (inputValue.trim()) {
+      const newNames = [...names, inputValue.trim()];
+      onChange(newNames.join(', '));
+      setInputValue('');
+    }
+  };
+
+  const removeName = (nameToRemove: string) => {
+    const newNames = names.filter(n => n !== nameToRemove);
+    onChange(newNames.join(', '));
+  };
+
+  return (
+    <div className="flex flex-col gap-1 w-full relative">
+      {(names.length > 0) && (
+        <div className="flex flex-wrap gap-1 mb-1">
+          {names.map((n, i) => (
+            <span key={i} className="text-[10px] bg-slate-200 dark:bg-white/10 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded flex items-center gap-1 border border-slate-300 dark:border-white/5">
+              {n} 
+              <button 
+                type="button"
+                onClick={() => removeName(n)}
+                className="hover:text-red-500"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-2 w-full">
+        <input 
+          type="text"
+          list={`members-list-${scheduleId}-${roleId}`}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleAdd();
+            }
+          }}
+          placeholder="Select or type..."
+          className={cn(
+            "flex-1 bg-transparent border-b text-slate-900 dark:text-white text-sm focus:outline-none transition-all pb-1",
+            warning ? "border-slate-300 dark:border-slate-700 transition-colors" : "border-slate-300 dark:border-white/10 transition-colors focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
+          )}
+        />
+        <button 
+          type="button" 
+          onClick={() => handleAdd()}
+          className="text-[9px] bg-slate-900 dark:bg-white text-white dark:text-black px-2 py-1 rounded font-bold uppercase tracking-widest shrink-0"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  )
+}
+
