@@ -11,6 +11,7 @@
 
 body {
   @apply antialiased tracking-tight;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Minimalist Custom Scrollbar */
@@ -44,6 +45,7 @@ body {
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dark * {

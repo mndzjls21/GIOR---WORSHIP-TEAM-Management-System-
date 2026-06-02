@@ -323,13 +323,20 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
               )}
 
               <div 
-                draggable
-                onDragStart={(e) => handleRowDragStart(e, item.id)}
+                draggable={!isSelected}
+                onDragStart={(e) => {
+                  if (isSelected) {
+                    e.preventDefault();
+                    return;
+                  }
+                  handleRowDragStart(e, item.id);
+                }}
                 onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setDraggedOverIndex(originalIndex); setIsDragOver(false); }}
                 onDragLeave={() => setDraggedOverIndex(null)}
                 onDrop={(e) => { setDraggedOverIndex(null); handleRowDrop(e, originalIndex); setIsDragOver(false); }}
                 className={cn(
-                  "bg-slate-200 dark:bg-white/5 transition-colors border rounded-lg flex flex-col transition-all cursor-grab active:cursor-grabbing",
+                  "bg-slate-200 dark:bg-white/5 transition-colors border rounded-lg flex flex-col transition-all",
+                  !isSelected && "cursor-grab active:cursor-grabbing",
                   isSelected ? "border-slate-400 dark:border-slate-500 bg-white dark:bg-white/10 shadow-sm" : "border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-slate-500",
                   draggingSetlistId === item.id ? "opacity-40" : "",
                   draggedOverIndex === originalIndex ? "border-t-4 border-t-indigo-500 shadow-lg -mt-1 ring-2 ring-indigo-500/20" : ""
