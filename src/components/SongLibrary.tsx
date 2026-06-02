@@ -227,6 +227,42 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
   const [instrumentalGuitar, setInstrumentalGuitar] = useState(song?.instrumental_guide_guitar || '');
   const [instrumentalPiano, setInstrumentalPiano] = useState(song?.instrumental_guide_piano || '');
 
+  const [mobileTab, setMobileTab] = useState<'details' | 'research'>('details');
+  const [researchVideoQuery, setResearchVideoQuery] = useState(`${song?.title || ''} ${song?.artist || ''}`.trim());
+
+  const [videoSearchInput, setVideoSearchInput] = useState(researchVideoQuery);
+
+  const [youtubeResults, setYoutubeResults] = useState<any[]>([]);
+  const [isSearchingYoutube, setIsSearchingYoutube] = useState(false);
+  const [selectedYoutubeId, setSelectedYoutubeId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!researchVideoQuery) return;
+    const fetchYoutube = async () => {
+      setIsSearchingYoutube(true);
+      try {
+        const res = await fetch(`/api/search-youtube?q=${encodeURIComponent(researchVideoQuery)}`);
+        const data = await res.json();
+        setYoutubeResults(data.videos || []);
+        if (data.videos && data.videos.length > 0) {
+          setSelectedYoutubeId(data.videos[0].id);
+        }
+      } catch (err) {
+        console.error("error fetching youtube:", err);
+      } finally {
+        setIsSearchingYoutube(false);
+      }
+    };
+    fetchYoutube();
+  }, [researchVideoQuery]);
+
+  const handleUpdateVideoSearch = () => {
+    const q = `${title} ${artist}`.trim();
+    setResearchVideoQuery(q);
+    setVideoSearchInput(q);
+    setSelectedYoutubeId(null);
+  };
+
   const hasAnyVideo = song?.media_url || song?.instrumental_guide_guitar || song?.instrumental_guide_piano;
 
   const handleSave = async (e: React.FormEvent) => {
@@ -402,7 +438,9 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
 
   return (
     <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/80 transition-colors backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className={cn("bg-white dark:bg-zinc-900 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded-lg w-full max-h-[90vh] shadow-2xl flex flex-col font-sans", !isEditing && hasAnyVideo ? "max-w-5xl" : "max-w-2xl")}>
+      <div className={cn("bg-white dark:bg-zinc-900 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded-lg w-full max-h-[90vh] shadow-2xl flex flex-col font-sans", 
+        isEditing ? "max-w-7xl lg:h-[85vh]" : (hasAnyVideo ? "max-w-5xl" : "max-w-2xl")
+      )}>
         <div className="p-4 border-b border-slate-300 dark:border-white/10 transition-colors flex justify-between items-center">
           <h2 className="text-sm uppercase tracking-widest font-bold text-slate-900 dark:text-slate-100">
             {isEditing ? (song ? 'Edit Song' : 'Add to Repository') : 'Song Viewer'}
@@ -411,70 +449,162 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
         </div>
         
         {isEditing ? (
-          <form onSubmit={handleSave} className="p-6 overflow-y-auto flex-1 space-y-6 text-left">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Title *</label>
-                <input required value={title} onChange={e=>setTitle(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Artist *</label>
-                <input required value={artist} onChange={e=>setArtist(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Original Key *</label>
-                <input required value={key} onChange={e=>setKey(e.target.value)} placeholder="e.g. G" className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">BPM *</label>
-                <input required type="number" value={bpm} onChange={e=>setBpm(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Language</label>
-                <select required value={language} onChange={e=>setLanguage(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors">
-                  <option value="" disabled>Select Language</option>
-                  <option value="English">English</option>
-                  <option value="Tagalog">Tagalog</option>
-                  <option value="Taglish">Taglish</option>
-                  <option value="Instrumental">Instrumental</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Tags (comma separated)</label>
-                <input value={tags} onChange={e=>setTags(e.target.value)} placeholder="Fast, Opening, Communion" className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">YouTube / Media URL</label>
-              <input type="url" value={media} onChange={e=>setMedia(e.target.value)} placeholder="https://youtube.com/watch?v=..." className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Instrumental Guide (Guitar) URL</label>
-              <input type="url" value={instrumentalGuitar} onChange={e=>setInstrumentalGuitar(e.target.value)} placeholder="https://youtube.com/watch?v=..." className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Instrumental Guide (Piano) URL</label>
-              <input type="url" value={instrumentalPiano} onChange={e=>setInstrumentalPiano(e.target.value)} placeholder="https://youtube.com/watch?v=..." className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Lyrics & Chords * (Use [brackets] for chords)</label>
-              <p className="text-[10px] text-slate-600 dark:text-zinc-400 mb-2 italic">Example: [G]Amazing grace how [C]sweet the [G]sound</p>
-              <textarea required rows={8} value={lyrics} onChange={e=>setLyrics(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-3 py-2 text-sm text-slate-900 dark:text-white font-mono leading-relaxed focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors" />
-            </div>
-            <div className="pt-4 flex justify-end gap-3">
-              {song && (
-                <button type="button" onClick={() => setIsEditing(false)} className="px-6 py-2 rounded text-xs uppercase tracking-widest font-bold text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:text-white transition-colors">
-                  Cancel
-                </button>
-              )}
-              <button type="submit" className="bg-slate-800 dark:bg-slate-200 text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-300 transition-colors px-6 py-2 rounded text-xs uppercase tracking-widest font-bold transition-colors">
-                Save Let it Be Written
+          <div className="flex flex-col h-full max-h-[85vh] lg:max-h-max overflow-hidden">
+            <div className="flex lg:hidden border-b border-slate-300 dark:border-white/10 shrink-0">
+              <button 
+                type="button"
+                onClick={() => setMobileTab('details')}
+                className={cn("flex-1 py-3 text-xs uppercase tracking-widest font-bold transition-colors", mobileTab === 'details' ? "bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white border-b-2 border-indigo-500" : "text-slate-500 dark:text-zinc-500 hover:bg-slate-50 dark:hover:bg-white/5")}
+              >
+                Song Details
+              </button>
+              <button 
+                type="button"
+                onClick={() => setMobileTab('research')}
+                className={cn("flex-1 py-3 text-xs uppercase tracking-widest font-bold transition-colors", mobileTab === 'research' ? "bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white border-b-2 border-indigo-500" : "text-slate-500 dark:text-zinc-500 hover:bg-slate-50 dark:hover:bg-white/5")}
+              >
+                Research Panel
               </button>
             </div>
-          </form>
+            <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+              <form onSubmit={handleSave} className={cn("p-6 overflow-y-auto w-full lg:w-1/2 space-y-6 text-left lg:border-r border-slate-300 dark:border-white/10", mobileTab === 'details' ? "block" : "hidden lg:block")}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Title *</label>
+                    <input required value={title} onChange={e=>setTitle(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Artist *</label>
+                    <input required value={artist} onChange={e=>setArtist(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Original Key *</label>
+                    <input required value={key} onChange={e=>setKey(e.target.value)} placeholder="e.g. G" className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">BPM *</label>
+                    <input required type="number" value={bpm} onChange={e=>setBpm(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Language</label>
+                    <select required value={language} onChange={e=>setLanguage(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500">
+                      <option value="" disabled>Select Language</option>
+                      <option value="English">English</option>
+                      <option value="Tagalog">Tagalog</option>
+                      <option value="Taglish">Taglish</option>
+                      <option value="Instrumental">Instrumental</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Tags (comma separated)</label>
+                    <input value={tags} onChange={e=>setTags(e.target.value)} placeholder="Fast, Opening, Communion" className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">YouTube / Media URL</label>
+                  <input type="url" value={media} onChange={e=>setMedia(e.target.value)} placeholder="https://youtube.com/watch?v=..." className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Instrumental Guide (Guitar) URL</label>
+                  <input type="url" value={instrumentalGuitar} onChange={e=>setInstrumentalGuitar(e.target.value)} placeholder="https://youtube.com/watch?v=..." className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Instrumental Guide (Piano) URL</label>
+                  <input type="url" value={instrumentalPiano} onChange={e=>setInstrumentalPiano(e.target.value)} placeholder="https://youtube.com/watch?v=..." className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-400 mb-2">Lyrics & Chords * (Use [brackets] for chords)</label>
+                  <p className="text-[10px] text-slate-600 dark:text-zinc-400 mb-2 italic">Example: [G]Amazing grace how [C]sweet the [G]sound</p>
+                  <textarea required rows={8} value={lyrics} onChange={e=>setLyrics(e.target.value)} className="w-full bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/10 rounded px-3 py-2 text-sm text-slate-900 dark:text-white font-mono leading-relaxed focus:outline-none focus:border-slate-400 dark:focus:border-slate-500" />
+                </div>
+                <div className="pt-4 flex flex-col sm:flex-row justify-end gap-3 pb-8 lg:pb-0">
+                  {song && (
+                    <button type="button" onClick={() => setIsEditing(false)} className="px-6 py-3 sm:py-2 rounded text-xs uppercase tracking-widest font-bold text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:text-white transition-colors">
+                      Cancel
+                    </button>
+                  )}
+                  <button type="submit" className="bg-slate-800 dark:bg-slate-200 text-white dark:text-black hover:bg-slate-700 dark:hover:bg-slate-300 px-6 py-4 sm:py-2 rounded text-xs uppercase tracking-widest font-bold transition-colors">
+                    Save Let it Be Written
+                  </button>
+                </div>
+              </form>
+              
+              <div className={cn("flex-col w-full lg:w-1/2 overflow-hidden bg-slate-100/50 dark:bg-zinc-950/50", mobileTab === 'research' ? "flex" : "hidden lg:flex")}>
+                <div className="hidden lg:flex p-4 border-b border-slate-300 dark:border-white/10 transition-colors justify-between items-center bg-slate-50 dark:bg-zinc-950">
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Research Panel</span>
+                </div>
+                <div className="flex-1 flex flex-col p-4 gap-6 overflow-y-auto w-full">
+                <div className="flex flex-col gap-2 h-[80vh]">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Search YouTube</span>
+                    <button 
+                      type="button" 
+                      onClick={handleUpdateVideoSearch}
+                      className="px-2 py-1 bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 transition-colors rounded text-[10px] font-bold text-slate-700 dark:text-zinc-300 uppercase tracking-widest"
+                    >
+                      Update Search
+                    </button>
+                  </div>
+                  <form 
+                    className="flex gap-2 mb-2"
+                    onSubmit={(e) => { e.preventDefault(); setResearchVideoQuery(videoSearchInput); setSelectedYoutubeId(null); }}
+                  >
+                    <input 
+                      type="text" 
+                      value={videoSearchInput}
+                      onChange={(e) => setVideoSearchInput(e.target.value)}
+                      placeholder="e.g. Amazing Grace worship"
+                      className="flex-1 bg-white dark:bg-zinc-900 border border-slate-300 dark:border-white/10 rounded px-2 py-1 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-400"
+                    />
+                    <button type="submit" className="px-3 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold uppercase tracking-wider transition-colors">
+                      Go
+                    </button>
+                  </form>
+                  <div className="flex-1 overflow-hidden flex flex-col gap-3 rounded-lg bg-slate-50 dark:bg-[#0a0a0a] border border-slate-300 dark:border-white/10 p-2">
+                    {selectedYoutubeId && (
+                      <div className="w-full aspect-video rounded overflow-hidden shadow-sm shrink-0 bg-black">
+                        <iframe
+                          className="w-full h-full"
+                          src={`https://www.youtube-nocookie.com/embed/${selectedYoutubeId}?autoplay=0`}
+                          title="YouTube Video"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    )}
+                    <div className="flex-1 overflow-y-auto pr-1 space-y-2 pb-2">
+                      {isSearchingYoutube ? (
+                        <div className="p-4 text-center text-xs text-slate-500">Searching YouTube...</div>
+                      ) : youtubeResults.length === 0 ? (
+                        <div className="p-4 text-center text-xs text-slate-500">No results found.</div>
+                      ) : (
+                        youtubeResults.map(vid => (
+                          <button
+                            key={vid.id}
+                            type="button"
+                            onClick={() => setSelectedYoutubeId(vid.id)}
+                            className={cn(
+                              "w-full text-left flex gap-3 p-2 rounded transition-colors group", 
+                              selectedYoutubeId === vid.id ? "bg-white dark:bg-white/10 shadow-sm border border-slate-200 dark:border-white/10" : "hover:bg-white dark:hover:bg-white/5 border border-transparent"
+                            )}
+                          >
+                            <img src={vid.thumbnail} alt={vid.title} className="w-24 h-16 object-cover rounded opacity-90 group-hover:opacity-100 transition-opacity" />
+                            <div className="flex flex-col py-0.5 justify-between flex-1 overflow-hidden">
+                              <span className="text-xs font-semibold text-slate-900 dark:text-slate-100 leading-tight line-clamp-2">{vid.title}</span>
+                              <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{vid.author} • {vid.duration}</span>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
         ) : (
           <div className="p-6 flex-1 overflow-hidden">
             {renderViewer()}
