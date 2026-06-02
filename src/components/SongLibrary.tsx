@@ -331,7 +331,7 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
             {song?.tags && song.tags.length > 0 && (
               <div className="flex gap-2 mt-4">
                 {song.tags.map(tag => (
-                  <span key={tag} className="text-[10px] bg-slate-200 dark:bg-white/5 transition-colors border border-slate-300 dark:border-white/10 transition-colors rounded px-2 py-1 text-slate-600 dark:text-zinc-400 uppercase tracking-widest">{tag}</span>
+                  <span key={tag} className="text-[10px] bg-slate-200 dark:bg-white/5 transition-colors border border-slate-300 dark:border-white/10 rounded px-2 py-1 text-slate-600 dark:text-zinc-400 uppercase tracking-widest">{tag}</span>
                 ))}
               </div>
             )}
@@ -343,7 +343,7 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
         </div>
 
         <div className={cn("grid gap-6 max-h-[50vh] overflow-y-auto", hasAnyVideo ? "md:grid-cols-2" : "grid-cols-1")}>
-          <div className="bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/5 transition-colors p-6 rounded-lg text-left h-max">
+          <div className="bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/5 p-6 rounded-lg text-left h-max">
             {song?.lyrics_chords.split('\n').map((line, lineIdx) => {
               if (!line.trim()) {
                 return <div key={lineIdx} className="h-6" />;
