@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Schedule, Setlist, Song, SetlistSong } from '../types';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { collection, onSnapshot, query, where, orderBy, addDoc, doc, updateDoc, deleteDoc, getDocs, getDoc } from 'firebase/firestore';
-import { GripVertical, X, AlertCircle, CheckCircle2, Play, Mic2, Search } from 'lucide-react';
+import { GripVertical, X, AlertCircle, CheckCircle2, Play, Pause, Activity, Mic2, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
 import LiveTransposer from './LiveTransposer';
 
@@ -367,21 +367,57 @@ export default function SetlistBuilder({ schedule }: { schedule: Schedule }) {
                   </div>
 
                   <div className="text-right flex items-center gap-4 cursor-default" onClick={e => e.stopPropagation()}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentRehearsalIndex(originalIndex);
+                        setShowRehearsal(true);
+                      }}
+                      title="Play in Rehearsal Mode"
+                      className="hidden sm:flex items-center gap-1 bg-slate-800 dark:bg-white text-white dark:text-black px-2 py-1.5 rounded font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors"
+                    >
+                      <Play className="w-3 h-3" /> Play
+                    </button>
+                    
                     <div className="text-right">
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs text-slate-600 dark:text-zinc-400">Key of</span>
+                      <div className="flex items-center gap-1 bg-white/50 dark:bg-zinc-900 rounded border border-slate-200 dark:border-white/10 px-1 py-0.5">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const CHROMATIC_SCALE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                            const currentIndex = CHROMATIC_SCALE.indexOf(item.target_key);
+                            if (currentIndex !== -1) {
+                              updateSetlist(item.id, { target_key: CHROMATIC_SCALE[(currentIndex - 1 + 12) % 12] });
+                            }
+                          }}
+                          className="px-1 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold"
+                          title="Transpose Down"
+                        >-</button>
                         <select 
                           value={item.target_key}
                           onChange={(e) => updateSetlist(item.id, { target_key: e.target.value })}
-                          className="bg-transparent text-xs text-slate-600 dark:text-zinc-400 font-bold focus:outline-none cursor-pointer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="bg-transparent text-[10px] sm:text-xs text-center text-slate-700 dark:text-white font-bold focus:outline-none cursor-pointer w-12"
                         >
-                          <option className="bg-white dark:bg-zinc-900 transition-colors" value="Nashville">Nashville</option>
-                          {['C','C#','Db','D','Eb','E','F','F#','Gb','G','Ab','A','Bb','B'].map(k => (
-                            <option className="bg-white dark:bg-zinc-900 transition-colors" key={k} value={k}>{k}</option>
+                          <option className="bg-white dark:bg-zinc-900" value="Nashville">#</option>
+                          {['C','C#','Db','D','D#','Eb','E','F','F#','Gb','G','G#','Ab','A','A#','Bb','B'].map(k => (
+                            <option className="bg-white dark:bg-zinc-900" key={k} value={k}>{k}</option>
                           ))}
                         </select>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const CHROMATIC_SCALE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                            const currentIndex = CHROMATIC_SCALE.indexOf(item.target_key);
+                            if (currentIndex !== -1) {
+                              updateSetlist(item.id, { target_key: CHROMATIC_SCALE[(currentIndex + 1) % 12] });
+                            }
+                          }}
+                          className="px-1 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold"
+                          title="Transpose Up"
+                        >+</button>
                       </div>
-                      <div className="text-xs font-mono text-slate-600 dark:text-zinc-400 mt-1">{item.song.bpm} BPM</div>
+                      <div className="text-[10px] uppercase tracking-widest font-mono text-slate-500 dark:text-zinc-500 mt-1">{item.song.bpm} BPM</div>
                     </div>
                     
                     <button 

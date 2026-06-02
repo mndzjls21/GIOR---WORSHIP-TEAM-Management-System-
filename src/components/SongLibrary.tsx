@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Song } from '../types';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { collection, onSnapshot, query, orderBy, addDoc, updateDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
-import { Search, Plus, Trash2, Library, Edit2 } from 'lucide-react';
+import { Search, Plus, Trash2, Library, Edit2, Play, Pause, Activity, FastForward, Rewind } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { transposeChord } from '../lib/utils';
+import { transposeChord, CHROMATIC_SCALE } from '../lib/utils';
 
 export default function SongLibrary({ scheduleId }: { scheduleId: string }) {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -227,6 +227,9 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
   const [instrumentalGuitar, setInstrumentalGuitar] = useState(song?.instrumental_guide_guitar || '');
   const [instrumentalPiano, setInstrumentalPiano] = useState(song?.instrumental_guide_piano || '');
 
+  const [targetKey, setTargetKey] = useState(song?.original_key || 'C');
+  const [showChords, setShowChords] = useState(true);
+
   const [mobileTab, setMobileTab] = useState<'details' | 'research'>('details');
   const [researchVideoQuery, setResearchVideoQuery] = useState(`${song?.title || ''} ${song?.artist || ''}`.trim());
 
@@ -319,31 +322,75 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
 
     return (
       <div className="flex flex-col gap-6 font-sans">
-        <div className="flex justify-between items-start border-b border-slate-300 dark:border-white/10 transition-colors pb-4">
+        <div className="flex justify-between flex-wrap items-start border-b border-slate-300 dark:border-white/10 transition-colors pb-4 shrink-0 gap-4">
           <div>
             <h2 className="text-3xl font-serif italic text-slate-900 dark:text-white mb-1">{song?.title}</h2>
             <div className="text-sm font-bold uppercase tracking-widest text-slate-900 dark:text-slate-100 mb-3">{song?.artist}</div>
-            <div className="flex gap-4 text-xs text-slate-600 dark:text-zinc-400 uppercase tracking-widest">
+            <div className="flex gap-4 text-xs text-slate-600 dark:text-zinc-400 uppercase tracking-widest mt-2 flex-wrap">
               <span>Key: <span className="text-slate-900 dark:text-white">{song?.original_key}</span></span>
               <span>BPM: <span className="text-slate-900 dark:text-white">{song?.bpm}</span></span>
               {song?.language && <span>Language: <span className="text-slate-900 dark:text-white">{song.language}</span></span>}
             </div>
             {song?.tags && song.tags.length > 0 && (
-              <div className="flex gap-2 mt-4">
+              <div className="flex gap-2 mt-4 flex-wrap">
                 {song.tags.map(tag => (
                   <span key={tag} className="text-[10px] bg-slate-200 dark:bg-white/5 transition-colors border border-slate-300 dark:border-white/10 rounded px-2 py-1 text-slate-600 dark:text-zinc-400 uppercase tracking-widest">{tag}</span>
                 ))}
               </div>
             )}
           </div>
-          <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 border border-slate-300 dark:border-white/10 transition-colors px-3 py-1.5 rounded text-xs uppercase text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:text-white hover:bg-slate-200 dark:bg-white/5 transition-colors">
-            <Edit2 className="w-3 h-3" />
-            Edit
-          </button>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {/* Transposer */}
+            <div className="flex items-center bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-white/10 rounded overflow-hidden">
+              <button 
+                onClick={() => {
+                  const currentIndex = CHROMATIC_SCALE.indexOf(targetKey);
+                  if (currentIndex !== -1) {
+                    const newIndex = (currentIndex - 1 + 12) % 12;
+                    setTargetKey(CHROMATIC_SCALE[newIndex]);
+                  } else if (targetKey === 'Nashville') {
+                    setTargetKey(song?.original_key || 'C');
+                  }
+                }}
+                className="px-2 py-1.5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-zinc-300 font-bold"
+                title="Transpose Down (-1)"
+              >-</button>
+              <select 
+                value={targetKey} 
+                onChange={e => setTargetKey(e.target.value)}
+                className="bg-transparent px-1 py-1.5 text-xs text-center uppercase tracking-widest font-bold text-slate-700 dark:text-zinc-300 outline-none w-16"
+                title="Transpose Key"
+              >
+                {CHROMATIC_SCALE.map(k => <option key={k} value={k}>{k}</option>)}
+                <option value="Nashville">#</option>
+              </select>
+              <button 
+                 onClick={() => {
+                  const currentIndex = CHROMATIC_SCALE.indexOf(targetKey);
+                  if (currentIndex !== -1) {
+                    const newIndex = (currentIndex + 1) % 12;
+                    setTargetKey(CHROMATIC_SCALE[newIndex]);
+                  } else if (targetKey === 'Nashville') {
+                    setTargetKey(song?.original_key || 'C');
+                  }
+                }}
+                className="px-2 py-1.5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-zinc-300 font-bold"
+                title="Transpose Up (+1)"
+              >+</button>
+            </div>
+
+            <button onClick={() => setIsEditing(true)} className="flex items-center gap-1 border border-slate-300 dark:border-white/10 px-3 py-1.5 rounded text-xs uppercase font-bold text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:text-white hover:bg-slate-200 dark:bg-white/5 transition-colors ml-2">
+              <Edit2 className="w-3.5 h-3.5" />
+              <span>Edit</span>
+            </button>
+          </div>
         </div>
 
-        <div className={cn("grid gap-6 max-h-[50vh] overflow-y-auto", hasAnyVideo ? "md:grid-cols-2" : "grid-cols-1")}>
-          <div className="bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/5 p-6 rounded-lg text-left h-max">
+        <div className={cn("grid gap-8 overflow-hidden h-[60vh]", hasAnyVideo ? "md:grid-cols-2" : "grid-cols-1")}>
+          <div 
+            id="viewer-lyrics-container"
+            className="bg-slate-50 dark:bg-zinc-950 transition-colors border border-slate-300 dark:border-white/5 p-6 md:p-8 rounded-lg text-left overflow-y-auto relative duration-100"
+          >
             {song?.lyrics_chords.split('\n').map((line, lineIdx) => {
               if (!line.trim()) {
                 return <div key={lineIdx} className="h-6" />;
@@ -376,9 +423,16 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
               }
 
               if (plainChords) {
+                const tokens = line.split(/(\s+)/);
+                const transposedLine = tokens.map(token => {
+                  if (!token.trim()) return token;
+                  if (CHORD_REGEX.test(token)) return transposeChord(token, song?.original_key || 'C', targetKey);
+                  return token;
+                }).join('');
+
                 return (
-                  <div key={lineIdx} className="text-slate-900 dark:text-slate-100 font-bold font-sans text-xs whitespace-pre mb-1">
-                    {line}
+                  <div key={lineIdx} className="text-indigo-600 dark:text-indigo-400 font-bold font-sans text-xs whitespace-pre mb-1">
+                    {transposedLine}
                   </div>
                 );
               }
@@ -391,6 +445,7 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
               while ((match = regex.exec(line)) !== null) {
                 const textBefore = line.substring(lastIndex, match.index);
                 const originalChord = match[1];
+                const transposedChord = transposeChord(originalChord, song?.original_key || 'C', targetKey);
 
                 if (textBefore) {
                   parsedElements.push(
@@ -400,8 +455,8 @@ function SongEditorModal({ song, onClose }: { song: Song | null; onClose: () => 
 
                 parsedElements.push(
                   <span key={`chord-${match.index}`} className="relative inline-flex flex-col items-center justify-end group/chord leading-none mx-[1px]">
-                    <span className="text-slate-900 dark:text-slate-100 font-bold text-[11px] leading-none mb-1 font-sans">
-                      {originalChord}
+                    <span className="text-indigo-600 dark:text-indigo-400 font-bold text-[11px] leading-none mb-1 font-sans">
+                      {transposedChord}
                     </span>
                   </span>
                 );

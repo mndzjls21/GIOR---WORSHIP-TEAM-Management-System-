@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Song } from '../types';
 import { transposeChord } from '../lib/utils';
 import { cn } from '../lib/utils';
+import { Play, Pause, Activity } from 'lucide-react';
 
 function YouTubeEmbed({ url, label }: { url: string, label: string }) {
   if (!url) return null;
@@ -32,6 +33,29 @@ function YouTubeEmbed({ url, label }: { url: string, label: string }) {
 
 export default function LiveTransposer({ song, targetKey }: { song: Song, targetKey: string }) {
   const [textSize, setTextSize] = useState(24); // 24px default (text-2xl)
+  const [isPlayingMetronome, setIsPlayingMetronome] = useState(false);
+  const [metronomeFlash, setMetronomeFlash] = useState(false);
+
+  useEffect(() => {
+    let metronomeInterval: NodeJS.Timeout;
+    let flashTimeout: NodeJS.Timeout;
+    
+    if (isPlayingMetronome && song?.bpm) {
+      const msPerBeat = 60000 / song.bpm;
+      metronomeInterval = setInterval(() => {
+        setMetronomeFlash(true);
+        flashTimeout = setTimeout(() => {
+          setMetronomeFlash(false);
+        }, 100);
+      }, msPerBeat);
+    }
+    
+    return () => {
+      clearInterval(metronomeInterval);
+      clearTimeout(flashTimeout);
+      setMetronomeFlash(false);
+    };
+  }, [isPlayingMetronome, song?.bpm]);
 
   // Render lyrics block, parsing bracketed chords dynamically
   const renderLyrics = (text: string) => {
@@ -123,8 +147,31 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
 
   return (
     <div className="flex flex-col h-full bg-white dark:bg-black/60 transition-colors">
+      <div className="p-4 flex flex-wrap items-center gap-4 border-b w-full border-slate-200 dark:border-white/10 transition-colors bg-slate-50 dark:bg-zinc-950">
+        <div className="flex gap-2">
+          <button onClick={() => setTextSize(s => Math.max(16, s - 2))} className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors bg-slate-200 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-white/10">Text Size -</button>
+          <button onClick={() => setTextSize(s => Math.min(48, s + 2))} className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors bg-slate-200 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-white/10">Text Size +</button>
+        </div>
+
+        <div className="hidden sm:block w-[1px] h-6 bg-slate-300 dark:bg-white/10 mx-2"></div>
+
+        <button 
+          onClick={() => setIsPlayingMetronome(!isPlayingMetronome)} 
+          className={cn("p-2 rounded border border-slate-300 dark:border-white/10 transition-colors flex items-center gap-2 px-3 font-bold uppercase tracking-widest text-[10px]", isPlayingMetronome ? "bg-amber-100 dark:bg-amber-900/40 border-amber-300 text-amber-600 dark:text-amber-400" : "bg-slate-200 dark:bg-white/5 text-slate-700 dark:text-zinc-300 hover:bg-slate-300 dark:hover:bg-white/10")} 
+          title="Metronome"
+        >
+          <Activity className={cn("w-4 h-4", metronomeFlash && "opacity-30")} />
+          <span>Metronome</span>
+        </button>
+      </div>
+
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        <div className="flex-1 p-8 font-serif overflow-y-auto relative h-full">
+        <div 
+          className={cn(
+            "flex-1 p-8 font-serif overflow-y-auto relative h-full transition-shadow duration-100",
+            metronomeFlash && "shadow-[inset_0_0_0_2px_rgba(251,191,36,0.5)]"
+          )}
+        >
           <div className="absolute inset-x-0 top-0 h-8 pointer-events-none bg-gradient-to-b from-white via-white dark:from-[#0d0d0d] dark:via-[#0d0d0d] to-transparent z-10 transition-colors"></div>
           
           <div className="space-y-4 leading-relaxed pb-12 relative z-10 w-full font-medium">
@@ -141,11 +188,6 @@ export default function LiveTransposer({ song, targetKey }: { song: Song, target
             </div>
           </div>
         )}
-      </div>
-      
-      <div className="p-4 flex flex-col sm:flex-row gap-2 border-t w-full border-slate-200 dark:border-white/10 transition-colors bg-slate-50 dark:bg-zinc-950">
-        <button onClick={() => setTextSize(s => Math.max(16, s - 2))} className="flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors bg-slate-200 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-white/10">Text Size -</button>
-        <button onClick={() => setTextSize(s => Math.min(48, s + 2))} className="flex-1 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors bg-slate-200 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-white/10">Text Size +</button>
       </div>
     </div>
   );
