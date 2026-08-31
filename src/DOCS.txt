@@ -1,9 +1,0 @@
-# Project Documentation Overview
-
-The GIOR Worship Team Management System is built to easily manage song libraries and regular sets. It's built with React, Vite, and Firebase.
-
-## Key Features
-- Library filtering
-- Drag and drop setlist builder
-- Light/Dark Mode
-- Song management with language / key indicators

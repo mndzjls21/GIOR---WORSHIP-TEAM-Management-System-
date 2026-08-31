@@ -1,9 +1,0 @@
-# App Guidelines
-These are the general guidelines for the application.
-
-1. Components are organized in the src/components folder.
-2. Shared logic is kept in src/lib.
-3. Types are strictly defined in src/types.ts.
-4. Tailwind is used exclusively for styling.
-
-We aim to keep the system organized and scalable.
